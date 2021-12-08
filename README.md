@@ -1,7 +1,7 @@
-# netologyProject
+# **netologyProject**
 ______________
 ## gfjhyfyhj
 
-### ffhfgfj
+### *ffhfgfj*
 ______________
 ####### rtrttutu
