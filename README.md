@@ -10,3 +10,6 @@ ______________
 [netology.yaml](https://github.com/Darkpunks/netologyProject/blob/main/yaml.png)
 
 [netology.jsonnet](https://github.com/Darkpunks/netologyProject/blob/main/jsonnet.png)
+
+______________________________________________________________________________
+2. Описание жизненного цикла задачи
