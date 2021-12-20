@@ -1,8 +1,1 @@
-# **netologyProject**
-______________
-## gfjhyfyhj
-
-### *ffhfgfj*
-______________
-####### rtrttutu
-[Яндекс](https://ya.ru)
+1.1 Ivan Prosvetov введение в DevOps
