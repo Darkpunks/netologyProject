@@ -3,6 +3,7 @@
 =======
 # **netologyProject**
 1.1. Введение в DevOps - Prosvetov Ivan
+version 13012022
 ______________
 [netology.tf](https://github.com/Darkpunks/netologyProject/blob/main/terraform.png) 
 
