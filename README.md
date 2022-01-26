@@ -82,17 +82,23 @@ Update CHANGELOG.md
 
 4.2.Какому тегу соответствует коммит 85024d3?
 
+Ответ
+
 sudo git show 85024
 
 commit 85024d3100126de36331c6982bfaac02cdab9e76 (tag: v0.12.23)
 
 4.3. Сколько родителей у коммита b8d720? Напишите их хеши
 
+Ответ
+
 sudo git show --pretty=format:' %P' b8d720
 
  56cd7859e05c36c06b56d013b55a252d0bb7e1589ea88f22fc6269854151c571162c5bcf958bee2b
 
 4.4. Перечислите хеши и комментарии всех коммитов которые были сделаны между тегами v0.12.23 и v0.12.24.
+
+Ответ
 
 sudo git log  v0.12.23..v0.12.24
 
@@ -149,6 +155,8 @@ dd01a3507 Update CHANGELOG.md
 4.5. Найдите коммит в котором была создана функция func providerSource, ее определение в коде выглядит так func providerSource(...)
  (вместо троеточего перечислены аргументы). 
 
+Ответ
+
 sudo git log -S'func providerSource'
 
 commit 5af1e6234ab6da412fb8637393c5a17a1b293663
@@ -163,18 +171,17 @@ Author: Martin Atkins <mart@degeneration.co.uk>
 
 Date:   Thu Apr 2 18:04:39 2020 -0700
 
-
 Если в одну линию - проверяем
 
 sudo git log -S'func providerSource'  --oneline
 
-
 5af1e6234 main: Honor explicit provider_installation CLI config when present
-
 
 8c928e835 main: Consult local directories as potential mirrors of providers
 
 4.6. Найдите все коммиты в которых была изменена функция globalPluginDirs.
+
+Ответ
 
 sudo git log -L :'func globalPluginDirs':plugins.go
 
@@ -201,6 +208,8 @@ git log -L :'func globalPluginDirs':plugins.go --oneline
 
 4.7. Кто автор функции synchronizedWriters?
 
+Ответ
+
 sudo git log -S'func synchronizedWriters' --pretty=format:'%h - %an %ae'
 
 Если я правильно понимаю: 2 автора
@@ -208,6 +217,7 @@ sudo git log -S'func synchronizedWriters' --pretty=format:'%h - %an %ae'
 bdfea50cc - James Bardin j.bardin@gmail.com
 
 5ac311e2a - Martin Atkins mart@degeneration.co.uk
+
 
 
 
