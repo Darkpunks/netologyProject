@@ -363,10 +363,15 @@ cd - вызывается из оболочки и выполняет непос
 ОТВЕТ:
 
 cat tst_bash
+
 if [[ -d /tmp ]];
+
 abcefgh
+
 abcdefgh
+
 123
+
 grep 123 tst_bash -c
 1
 
@@ -387,21 +392,37 @@ grep 123 tst_bash |wc -l
 
 ОТВЕТ: 
 cat tst_bash
+
 if [[ -d /tmp ]];
+
 abcefgh
+
 abcdefgh
+
 123
+
 new line
+
 123456
+
 cat tst_bash_out
+
 cat: tst_bash_out: No such file or directory 
+
 vagrant@vagrant:~$ cat <tst_bash >tst_bash_out
+
 vagrant@vagrant:~$ cat tst_bash_out
+
 if [[ -d /tmp ]];
+
 abcefgh
+
 abcdefgh
+
 123
+
 new line
+
 123456
 
 3.2.6 Получится ли находясь в графическом режиме, вывести данные из PTY в какой-либо из эмуляторов TTY? Сможете ли вы наблюдать выводимые данные?
