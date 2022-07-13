@@ -473,5 +473,103 @@ Connection to localhost closed
 ОТВЕТ: Команда tee делает вывод и в файл, и дает права на запись.  
 Команда echo выводит информацию на экран. Если запустить echo с рутом, то права на запись не получается получить. 
 В случае с tee именно такие права и даются
+_____________________________________________
+3.7. Компьютерные сети, лекция 2
+_____________________________________________
+1. Проверьте список доступных сетевых интерфейсов на вашем компьютере. Какие команды есть для этого в Linux и в Windows?
+ОТВЕТ:
+Windows: 
+Для ipv4
+GetAdaptersInfo 
+Для Ipv6
+GetAdaptersAddresses
+Можно получить список сетевых 
+адаптеров GetIfTable или GetIfEntry или GetIfTable
 
+Linux 
+# ip a |awk '/state UP/{print $2}'
+eth0:
+
+или 
+# ip -o a show | cut -d ' ' -f 2,7
+
+или 
+
+ip a |grep -i inet | awk '{print $7, $2}'
+
+2. Какой протокол используется для распознавания соседа по сетевому интерфейсу? Какой пакет и команды есть в Linux для этого?
+
+ОТВЕТ: Neighbor Discovery Protocol (NDP)  , 
+пакет iproute2
+
+3. Какая технология используется для разделения L2 коммутатора на несколько виртуальных сетей? Какой пакет и команды есть в Linux для этого? Приведите пример конфига.
+
+ОТВЕТ: vlan  и пакет iproite2
+Пример конфига 
+ip link add link eth0 name eth0.100 type vlan id 100
+ip link set dev eth0.100 up
+ip a add 192.168.100.2/24 dev eth0.100
+
+4. Какие типы агрегации интерфейсов есть в Linux? Какие опции есть для балансировки нагрузки? Приведите пример конфига.
+
+
+ОТВЕТ:
+Mode-0(balance-rr
+Mode-1(active-backup) 
+Mode-2(balance-xor) 
+Mode-3(broadcast) 
+Mode-4(802.3ad) 
+Mode-5(balance-tlb) 
+Mode-6(balance-alb) 
+Б) 
+[root@piv]# modprobe  bonding
+[root@piv]# ip addr add 192.168.100.33/24 brd + dev bond0
+[root@piv]# ip link set dev bond0 up
+[root@piv]# ifenslave  bond0 eth2 eth3
+master has no hw address assigned; getting one from slave!
+The interface eth2 is up, shutting it down it to enslave it.
+The interface eth3 is up, shutting it down it to enslave it.
+[root@piv]# ifenslave  bond0 eth2 eth3
+[root@piv]# cat /proc/net/bond0/info
+Bonding Mode: load balancing (round-robin)
+MII Status: up
+MII Polling Interval (ms): 0
+Up Delay (ms): 0
+Down Delay (ms): 0
+
+Slave Interface: eth2
+MII Status: up
+Link Failure Count: 0
+
+Slave Interface: eth3
+MII Status: up
+Link Failure Count: 0
+
+
+
+5. Сколько IP адресов в сети с маской /29 ? Сколько /29 подсетей можно получить из сети с маской /24. Приведите несколько примеров /29 подсетей внутри сети 10.10.10.0/24.
+
+ОТВЕТ: 
+8  адресов с маской подсети /29, минус броадкаст и адрес сети - в этой сети может быть 6 хостов
+32 шт 29 посетей помещается в 24 подсети
+примеры:
+10.10.10.0/29
+10.10.10.8/29 
+10.10.10.16/29
+10.10.10.24/29
+10.10.10.32/29
+
+6. Задача: вас попросили организовать стык между 2-мя организациями. Диапазоны 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 уже заняты. Из какой подсети допустимо взять частные IP адреса? Маску выберите из расчета максимум 40-50 хостов внутри подсети.
+ОТВЕТ: 192.0.0.0/26 на 62 хоста 
+
+7. Как проверить ARP таблицу в Linux, Windows? Как очистить ARP кеш полностью? Как из ARP таблицы удалить только один нужный IP?
+ОТВЕТ:
+Для windows  
+Посмотреть все ip:  arp –a
+Удалить все ip: netsh interface ip delete arpcache
+удалить один ip: arp -d 192.168.3.171
+для линукса:
+посмотреть все - ip n
+удалить все ip n flush all
+удалить один ip n del 192.168.0.1 dev eth0
 
