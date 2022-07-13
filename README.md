@@ -487,11 +487,11 @@ GetAdaptersAddresses
 адаптеров GetIfTable или GetIfEntry или GetIfTable
 
 Linux 
-# ip a |awk '/state UP/{print $2}'
+ip a |awk '/state UP/{print $2}'
 eth0:
 
 или 
-# ip -o a show | cut -d ' ' -f 2,7
+ip -o a show | cut -d ' ' -f 2,7
 
 или 
 
