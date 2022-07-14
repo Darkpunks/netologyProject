@@ -564,7 +564,7 @@ Link Failure Count: 0
 
 Можно взять из 100.64.0.0/10
 
-например,
+
 In 2012, the IETF defined a Shared Address Space[4] for use in ISP CGN deployments and NAT devices that can handle the same addresses occurring both on inbound and outbound interfaces. ARIN returned space to the IANA as needed for this allocation and[5] "The allocated address block is 100.64.0.0/10".[4][6]
 
 
