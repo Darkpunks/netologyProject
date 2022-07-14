@@ -562,6 +562,13 @@ Link Failure Count: 0
 6. Задача: вас попросили организовать стык между 2-мя организациями. Диапазоны 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16 уже заняты. Из какой подсети допустимо взять частные IP адреса? Маску выберите из расчета максимум 40-50 хостов внутри подсети.
 ОТВЕТ: 192.0.0.0/26 на 62 хоста 
 
+ТИКЖЕ  можно взять из 100.64.0.0/10
+
+например,
+In 2012, the IETF defined a Shared Address Space[4] for use in ISP CGN deployments and NAT devices that can handle the same addresses occurring both on inbound and outbound interfaces. ARIN returned space to the IANA as needed for this allocation and[5] "The allocated address block is 100.64.0.0/10".[4][6]
+
+
+
 7. Как проверить ARP таблицу в Linux, Windows? Как очистить ARP кеш полностью? Как из ARP таблицы удалить только один нужный IP?
 ОТВЕТ:
 Для windows  
