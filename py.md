@@ -256,10 +256,10 @@ if __name__ == "__main__":
 ### Вывод скрипта при запуске при тестировании:
 ```
 
-py .\test2.py ya.ru google.com mail.ru mail.google.com
-ya.ru - 87.250.250.242
+py .\test2.py drive.google.ru google.com  mail.google.com
+drive.google.ru - 87.250.250.242
 google.com - 74.125.131.138
-[ERROR] mail.ru IP mismatch: 217.69.139.202 94.100.180.201
+[ERROR] mail.google.ru IP mismatch: 217.69.139.202 94.100.180.201
 mail.google.com - 209.85.233.18
 
 
