@@ -720,8 +720,8 @@ __________________________________________________________________________
 ОТВЕТ:
 Запустилось. 
 
-# HELP go_gc_duration_seconds A summary of the pause duration of garbage collection cycles.
-# TYPE go_gc_duration_seconds summary
+HELP go_gc_duration_seconds A summary of the pause duration of garbage collection cycles.
+TYPE go_gc_duration_seconds summary
 go_gc_duration_seconds{quantile="0"} 0
 go_gc_duration_seconds{quantile="0.25"} 0
 go_gc_duration_seconds{quantile="0.5"} 0
@@ -729,23 +729,23 @@ go_gc_duration_seconds{quantile="0.75"} 0
 go_gc_duration_seconds{quantile="1"} 0
 go_gc_duration_seconds_sum 0
 go_gc_duration_seconds_count 0
-# HELP go_goroutines Number of goroutines that currently exist.
-# TYPE go_goroutines gauge
+HELP go_goroutines Number of goroutines that currently exist.
+TYPE go_goroutines gauge
 go_goroutines 8
-# HELP go_info Information about the Go environment.
-# TYPE go_info gauge
+HELP go_info Information about the Go environment.
+TYPE go_info gauge
 go_info{version="go1.17.3"} 1
-# HELP go_memstats_alloc_bytes Number of bytes allocated and still in use.
-# TYPE go_memstats_alloc_bytes gauge
+HELP go_memstats_alloc_bytes Number of bytes allocated and still in use.
+TYPE go_memstats_alloc_bytes gauge
 go_memstats_alloc_bytes 1.388024e+06
-# HELP go_memstats_alloc_bytes_total Total number of bytes allocated, even if freed.
-# TYPE go_memstats_alloc_bytes_total counter
+HELP go_memstats_alloc_bytes_total Total number of bytes allocated, even if freed.
+TYPE go_memstats_alloc_bytes_total counter
 go_memstats_alloc_bytes_total 1.388024e+06
-# HELP go_memstats_buck_hash_sys_bytes Number of bytes used by the profiling bucket hash table.
-# TYPE go_memstats_buck_hash_sys_bytes gauge
+HELP go_memstats_buck_hash_sys_bytes Number of bytes used by the profiling bucket hash table.
+TYPE go_memstats_buck_hash_sys_bytes gauge
 go_memstats_buck_hash_sys_bytes 1.445327e+06
-# HELP go_memstats_frees_total Total number of frees.
-# TYPE go_memstats_frees_total counter
+HELP go_memstats_frees_total Total number of frees.
+TYPE go_memstats_frees_total counter
 go_memstats_frees_total 754
 
 и т.д.
