@@ -648,14 +648,14 @@ nc        13049         ivan    1w      REG  253,0         1 50331728 /home/ivan
 Зомби-процесс существует до тех пор, пока родительский процесс не прочитает его статус с помощью системного вызова wait(), в результате чего запись в таблице процессов будет освобождена.
 
 5. В iovisor BCC есть утилита opensnoop:
-root@vagrant:~# dpkg -L bpfcc-tools | grep sbin/opensnoop
+root@vagrant: ~# dpkg -L bpfcc-tools | grep sbin/opensnoop
 /usr/sbin/opensnoop-bpfcc
 На какие файлы вы увидели вызовы группы open за первую секунду работы утилиты? Воспользуйтесь пакетом bpfcc-tools для Ubuntu 20.04
 
 ОТВЕТ: 
-root@vagrant:~# dpkg -L bpfcc-tools | grep sbin/opensnoop
+root@vagrant: ~# dpkg -L bpfcc-tools | grep sbin/opensnoop
 /usr/sbin/opensnoop-bpfcc
-root@vagrant:~# /usr/sbin/opensnoop-bpfcc
+root@vagrant: ~# /usr/sbin/opensnoop-bpfcc
 PID    COMM               FD ERR PATH
 766    vminfo              6   0 /var/run/utmp
 562    dbus-daemon        -1   2 /usr/local/share/dbus-1/system-services
