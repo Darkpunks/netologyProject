@@ -580,3 +580,323 @@ In 2012, the IETF defined a Shared Address Space[4] for use in ISP CGN deploymen
 удалить все ip n flush all
 удалить один ip n del 192.168.0.1 dev eth0
 
+ 
+ __________________________________________________________________________
+ Домашнее задание к занятию "3.3. Операционные системы, лекция 1"
+ __________________________________________________________________________
+1. Какой системный вызов делает команда cd? В прошлом ДЗ мы выяснили, что cd не является самостоятельной программой, это shell builtin, поэтому запустить strace непосредственно на cd не получится. Тем не менее, вы можете запустить strace на /bin/bash -c 'cd /tmp'. В этом случае вы увидите полный список системных вызовов, которые делает сам bash при старте. Вам нужно найти тот единственный, который относится именно к cd. Обратите внимание, что strace выдаёт результат своей работы в поток stderr, а не в stdout.
+
+ОТВЕТ: 
+
+Системный вызов — это механизм взаимодействия пользовательских программ с ядром Linux, а strace — мощный инструмент, для их отслеживания. 
+
+Получается:  chdir("/tmp") 
+
+
+2. Попробуйте использовать команду file на объекты разных типов на файловой системе. Например:
+vagrant@vagrant:~$ file /dev/tty
+/dev/tty: character special (5/0)
+vagrant@vagrant:~$ file /dev/sda
+/dev/sda: block special (8/0)
+vagrant@vagrant:~$ file /bin/bash
+/bin/bash: ELF 64-bit LSB shared object, x86-64
+Используя strace выясните, где находится база данных file на основании которой она делает свои догадки.
+
+ОТВЕТ:
+Файл базы типов - /usr/share/misc/magic.mgc
+Получается: 
+openat(AT_FDCWD, "/usr/share/misc/magic.mgc", O_RDONLY) = 3
+
+происходит поиск файлов пользователей
+stat("/home/piv/.magic.mgc", 0x7ffedefbea50) = -1 ENOENT (Нет такого файла или каталога)
+stat("/home/piv/.magic", 0x7ffedefbea50) = -1 ENOENT (Нет такого файла или каталога)
+stat("/etc/magic", {st_mode=S_IFREG|0644, st_size=111, ...}) = 0
+openat(AT_FDCWD, "/etc/magic", O_RDONLY) = 3
+
+
+
+3.  Предположим, приложение пишет лог в текстовый файл. Этот файл оказался удален (deleted в lsof), однако возможности сигналом сказать приложению переоткрыть файлы или просто перезапустить приложение – нет. Так как приложение продолжает писать в удаленный файл, место на диске постепенно заканчивается. Основываясь на знаниях о перенаправлении потоков предложите способ обнуления открытого удаленного файла (чтобы освободить место на файловой системе).
+
+ОТВЕТ:
+c помощью lsof нашел pid процесса который пишет в удаленный файл. 
+
+[ivan@localhost ~]$ lsof | grep deleted
+nc        13049         ivan    1w      REG  253,0       105 50331728 /home/ivan/file (deleted)
+
+в procfc нашел файловый дискриптор данного процесса который пишет в удаленный файл: 
+[ivan@localhost ~]$ ll /proc/13049/fd
+
+lrwx------. 1 ivan ivan 64 Jul 20 21:23 0 -> /dev/pts/1
+l-wx------. 1 ivan ivan 64 Jul 20 21:23 1 -> /home/ivan/file (deleted)
+lrwx------. 1 ivan ivan 64 Jul 20 21:23 2 -> /dev/pts/1
+lrwx------. 1 ivan ivan 64 Jul 20 21:23 5 -> socket:[36294]
+
+И с помощью echo обнулил дискриптор: 
+
+[ivan@localhost ~]$ echo  >/proc/13049/fd/1
+
+При проверке:
+[ivan@localhost ~]$ lsof | grep deleted
+nc        13049         ivan    1w      REG  253,0         1 50331728 /home/ivan/file (deleted)
+
+4.  Занимают ли зомби-процессы какие-то ресурсы в ОС (CPU, RAM, IO)?
+
+
+ОТВЕТ: 
+Зомби-процессы -  процессы, которые завершили своё выполнение, но ещё присутствуют в списке процессов операционной системы, чтобы дать родительскому процессу считать код завершения.
+
+Зомби-процесс существует до тех пор, пока родительский процесс не прочитает его статус с помощью системного вызова wait(), в результате чего запись в таблице процессов будет освобождена.
+
+5. В iovisor BCC есть утилита opensnoop:
+root@vagrant:~# dpkg -L bpfcc-tools | grep sbin/opensnoop
+/usr/sbin/opensnoop-bpfcc
+На какие файлы вы увидели вызовы группы open за первую секунду работы утилиты? Воспользуйтесь пакетом bpfcc-tools для Ubuntu 20.04
+
+ОТВЕТ: 
+root@vagrant:~# dpkg -L bpfcc-tools | grep sbin/opensnoop
+/usr/sbin/opensnoop-bpfcc
+root@vagrant:~# /usr/sbin/opensnoop-bpfcc
+PID    COMM               FD ERR PATH
+766    vminfo              6   0 /var/run/utmp
+562    dbus-daemon        -1   2 /usr/local/share/dbus-1/system-services
+562    dbus-daemon        18   0 /usr/share/dbus-1/system-services
+562    dbus-daemon        -1   2 /lib/dbus-1/system-services
+562    dbus-daemon        18   0 /var/lib/snapd/dbus-1/system-services/
+
+
+6 . Какой системный вызов использует uname -a? Приведите цитату из man по этому системному вызову, где описывается альтернативное местоположение в /proc, где можно узнать версию ядра и релиз ОС.
+
+ОТВЕТ: 
+системный вызов uname()
+
+цитата из man: 
+     Part of the utsname information is also accessible  via  /proc/sys/ker‐
+       nel/{ostype, hostname, osrelease, version, domainname}.
+
+
+7. Чем отличается последовательность команд через ; и через && в bash? Например:
+root@vagrant:~# test -d /tmp/some_dir; echo Hi
+Hi
+root@vagrant:~# test -d /tmp/some_dir && echo Hi
+root@vagrant:~#
+Есть ли смысл использовать в bash &&, если применить set -e?
+
+ОТВЕТ: 
+
+test -d /tmp/some_dir && echo Hi -  в первом примере оператор echo отработает свою команда если завершится test успешно 
+set -e – если будет не нулевое значение исполняемых нами команд, то оператор set-e прерывает сессию. 
+Если && использовать с set -e- то произойдет ошибка и команда прекратиться 
+
+8. Из каких опций состоит режим bash set -euxo pipefail и почему его хорошо было бы использовать в сценариях?
+
+ОТВЕТ: 
+Указав параметр -e скрипт немедленно завершит работу, если любая команда выйдет с ошибкой.
+установить -o pipefail
+Этот параметр предотвращает маскирование ошибок в конвейере. В случае сбоя какой-либо команды в конвейере этот код возврата будет использоваться как код возврата для всего конвейера. По умолчанию конвейер возвращает код последней команды, даже если она выполнена успешно.
+set -u
+
+Благодаря ему оболочка проверяет инициализацию переменных в скрипте. Если переменной не будет, скрипт немедленно завершиться.
+
+set -x
+
+Параметр -x очень полезен при отладке. С помощью него bash печатает в стандартный вывод все команды перед их исполнением.
+
+К счастью, можно изменить поведение оболочки используя встроенные функции, в частности set. С ее помощью, можно значительно повысить безопасность.
+
+9. Используя -o stat для ps, определите, какой наиболее часто встречающийся статус у процессов в системе. В man ps ознакомьтесь (/PROCESS STATE CODES) что значат дополнительные к основной заглавной буквы статуса процессов. Его можно не учитывать при расчете (считать S, Ss или Ssl равнозначными).
+
+ОТВЕТ: 
+Наиболее часто встречаются процессы с STAT равным S, Ss и Ssl (прерываемый сон), ожидающие дальнейшей команды/сигналов.
+Приложил скрин.
+
+__________________________________________________________________________
+ 3.4. Операционные системы, лекция 2"
+ __________________________________________________________________________
+1. На лекции мы познакомились с node_exporter. В демонстрации его исполняемый файл запускался в background. Этого достаточно для демо, но не для настоящей production-системы, где процессы должны находиться под внешним управлением. Используя знания из лекции по systemd, создайте самостоятельно простой unit-файл для node_exporter:
+поместите его в автозагрузку,
+предусмотрите возможность добавления опций к запускаемому процессу через внешний файл (посмотрите, например, на systemctl cat cron),
+удостоверьтесь, что с помощью systemctl процесс корректно стартует, завершается, а после перезагрузки автоматически поднимается.
+
+ОТВЕТ:
+Запустилось. 
+
+# HELP go_gc_duration_seconds A summary of the pause duration of garbage collection cycles.
+# TYPE go_gc_duration_seconds summary
+go_gc_duration_seconds{quantile="0"} 0
+go_gc_duration_seconds{quantile="0.25"} 0
+go_gc_duration_seconds{quantile="0.5"} 0
+go_gc_duration_seconds{quantile="0.75"} 0
+go_gc_duration_seconds{quantile="1"} 0
+go_gc_duration_seconds_sum 0
+go_gc_duration_seconds_count 0
+# HELP go_goroutines Number of goroutines that currently exist.
+# TYPE go_goroutines gauge
+go_goroutines 8
+# HELP go_info Information about the Go environment.
+# TYPE go_info gauge
+go_info{version="go1.17.3"} 1
+# HELP go_memstats_alloc_bytes Number of bytes allocated and still in use.
+# TYPE go_memstats_alloc_bytes gauge
+go_memstats_alloc_bytes 1.388024e+06
+# HELP go_memstats_alloc_bytes_total Total number of bytes allocated, even if freed.
+# TYPE go_memstats_alloc_bytes_total counter
+go_memstats_alloc_bytes_total 1.388024e+06
+# HELP go_memstats_buck_hash_sys_bytes Number of bytes used by the profiling bucket hash table.
+# TYPE go_memstats_buck_hash_sys_bytes gauge
+go_memstats_buck_hash_sys_bytes 1.445327e+06
+# HELP go_memstats_frees_total Total number of frees.
+# TYPE go_memstats_frees_total counter
+go_memstats_frees_total 754
+
+и т.д.
+
+Провериили запуски остановку процесса
+
+[ivan@localhost node_exporter-1.3.1.linux-amd64]$ vi /etc/systemd/system/node_exporter.service
+ 
+и задали данные для unit файла:
+
+[Unit]
+Description=Node Exporter
+ 
+[Service]
+ExecStart=/var/lib/node_exporter/node_exporter
+EnvironmentFile=/etc/default/node_exporter
+ 
+[Install]
+WantedBy=default.target
+
+создаем файл: 
+[ivan@localhost node_exporter-1.3.1.linux-amd64]$ sudo vi /etc/systemd/system/node_exporter.service
+
+
+запускаем: 
+sudo systemctl start node_exporter
+
+добавляем в автозагрузку: 
+
+[ivan@localhost node_exporter-1.3.1.linux-amd64]$ sudo systemctl enable node_exporter
+
+
+узнаем статус: 
+[ivan@localhost node_exporter-1.3.1.linux-amd64]$ sudo systemctl status node_exporter
+
+● node_exporter.service - Node Exporter
+   Loaded: loaded (/etc/systemd/system/node_exporter.service; disabled; vendor preset: disabled)
+   Active: active (running) since Wed 2022-07-20 22:10:41 MSK; 17s ago
+ Main PID: 30749 (node_exporter)
+   CGroup: /system.slice/node_exporter.service
+           └─30749 /var/lib/node_exporter/node_exporter
+
+Jul 20 22:10:41 localhost.localdomain node_exporter[30749]: ts=2022-07-20T19:10:41.821Z caller=node_exporter.go:115 lev...zone
+Jul 20 22:10:41 localhost.localdomain node_exporter[30749]: ts=2022-07-20T19:10:41.821Z caller=node_exporter.go:115 lev...time
+Jul 20 22:10:41 localhost.localdomain node_exporter[30749]: ts=2022-07-20T19:10:41.821Z caller=node_exporter.go:115 lev...imex
+Jul 20 22:10:41 localhost.localdomain node_exporter[30749]: ts=2022-07-20T19:10:41.821Z caller=node_exporter.go:115 lev...eues
+Jul 20 22:10:41 localhost.localdomain node_exporter[30749]: ts=2022-07-20T19:10:41.821Z caller=node_exporter.go:115 lev...name
+Jul 20 22:10:41 localhost.localdomain node_exporter[30749]: ts=2022-07-20T19:10:41.821Z caller=node_exporter.go:115 lev...stat
+Jul 20 22:10:41 localhost.localdomain node_exporter[30749]: ts=2022-07-20T19:10:41.821Z caller=node_exporter.go:115 lev...=xfs
+Jul 20 22:10:41 localhost.localdomain node_exporter[30749]: ts=2022-07-20T19:10:41.821Z caller=node_exporter.go:115 lev...=zfs
+Jul 20 22:10:41 localhost.localdomain node_exporter[30749]: ts=2022-07-20T19:10:41.821Z caller=node_exporter.go:199 lev...9100
+Jul 20 22:10:41 localhost.localdomain node_exporter[30749]: ts=2022-07-20T19:10:41.821Z caller=tls_config.go:195 level=...alse
+Hint: Some lines were ellipsized, use -l to show in full.
+
+
+2. Ознакомьтесь с опциями node_exporter и выводом /metrics по-умолчанию. Приведите несколько опций, которые вы бы выбрали для базового мониторинга хоста по CPU, памяти, диску и сети.
+
+ОТВЕТ:
+Отключили собственные метрики node exporter и включили статусы systemd сервисы 
+идем во 2 файл и меняем его: sudo vi /etc/default/node_exporter
+
+OPTIONS=--web.disable-exporter-metrics --collector.systemd
+
+и меняем unit файл
+
+[Unit]
+Description=Node Exporter
+ 
+[Service]
+ExecStart=/var/lib/node_exporter/node_exporter $OPTIONS
+EnvironmentFile=/etc/default/node_exporter
+ 
+[Install]
+WantedBy=default.target
+
+перечитываем сервис файл sudo systemctl daemon-reload
+
+[ivan@localhost node_exporter-1.3.1.linux-amd64]$ sudo systemctl restart node_exporter
+[ivan@localhost node_exporter-1.3.1.linux-amd64]$ sudo systemctl status node_exporter
+● node_exporter.service - Node Exporter
+   Loaded: loaded (/etc/systemd/system/node_exporter.service; enabled; vendor preset: disabled)
+   Active: active (running) since Wed 2022-07-20 22:40:04 MSK; 3s ago
+ Main PID: 41371 (node_exporter)
+   CGroup: /system.slice/node_exporter.service
+           └─41371 /var/lib/node_exporter/node_exporter --web.disable-exporter-metrics --collector.systemd
+
+
+
+CPU, RAM, Disk включены по умолчанию:  
+--collector.cpu  
+--collector.diskstats
+--collector.nvme 
+--collector.meminfo 
+
+
+3. Установите в свою виртуальную машину Netdata. Воспользуйтесь готовыми пакетами для установки (sudo apt install -y netdata). После успешной установки:
+в конфигурационном файле /etc/netdata/netdata.conf в секции [web] замените значение с localhost на bind to = 0.0.0.0,
+добавьте в Vagrantfile проброс порта Netdata на свой локальный компьютер и сделайте vagrant reload:
+config.vm.network "forwarded_port", guest: 19999, host: 19999
+После успешной перезагрузки в браузере на своем ПК (не в виртуальной машине) вы должны суметь зайти на localhost:19999. Ознакомьтесь с метриками, которые по умолчанию собираются Netdata и с комментариями, которые даны к этим метрикам.
+
+ОТВЕТ: Установил, заменил на 0.0.0.0, сделал проброс порта. Ответ на скриншоте по данным машины
+
+4. Можно ли по выводу dmesg понять, осознает ли ОС, что загружена не на настоящем оборудовании, а на системе виртуализации?
+
+ОТВЕТ:
+sudo dmesg |grep virtualiz
+[    0.000000] Booting paravirtualized kernel on VMware hypervisor
+[    1.956774] systemd[1]: Detected virtualization vmware.
+
+
+5. Как настроен sysctl fs.nr_open на системе по-умолчанию? Узнайте, что означает этот параметр. Какой другой существующий лимит не позволит достичь такого числа (ulimit --help)?
+
+ОТВЕТ:
+sudo sysctl -n fs.nr_open
+1048576
+
+Для пользователя задать больше этого числа нельзя. За исключение если поменять данные
+Если задается кратное 1024, то получается =1024*1024. 
+
+Если  хотим проверить максимуу :
+cat /proc/sys/fs/file-max
+9223372036854775807
+
+Другой существующий лимит не позволит достичь такого числа:
+ulimit -Sn
+1024
+
+6. Запустите любой долгоживущий процесс (не ls, который отработает мгновенно, а, например, sleep 1h) в отдельном неймспейсе процессов; покажите, что ваш процесс работает под PID 1 через nsenter. Для простоты работайте в данном задании под root (sudo -i). Под обычным пользователем требуются дополнительные опции (--map-root-user) и т.д.
+
+ОТВЕТ:
+ps -e |grep sleep
+   1910 pts/2    00:00:00 sleep
+nsenter --target 1910 --pid --mount
+ps
+    PID TTY          TIME CMD
+      2 pts/0    00:00:00 bash
+     11 pts/0    00:00:00 ps
+
+7. Найдите информацию о том, что такое :(){ :|:& };:. Запустите эту команду в своей виртуальной машине Vagrant с Ubuntu 20.04 (это важно, поведение в других ОС не проверялось). Некоторое время все будет "плохо", после чего (минуты) – ОС должна стабилизироваться. Вызов dmesg расскажет, какой механизм помог автоматической стабилизации. Как настроен этот механизм по-умолчанию, и как изменить число процессов, которое можно создать в сессии?
+
+ОТВЕТ:
+Запустил.
+таким образом это функция, которая параллельно пускает два своих экземпляра. Каждый пускает ещё по два и т.д. – получается словно «ветвление»
+При отсутствии лимита на число процессов машина быстро исчерпывает физическую память и уходит в своп.
+
+Нашел такой функционал:
+[ 3099.973235] cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/session-4.scope
+[ 3103.171819] cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/session-11.scope
+
+Система опираясь на файлы предложенные выше, показывает что в пользовательской зоне ресурсов имеет определенное ограничение на новые ресурсы и как только происходит превышение – происходит блокировка ресурсов.
+
+Изменить число процессов, которое можно создать в сессии:
+ulimit -u 20 - число процессов будет ограниченно 20 для пользователя.
