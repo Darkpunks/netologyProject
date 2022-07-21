@@ -675,7 +675,7 @@ PID    COMM               FD ERR PATH
 
 
 7. Чем отличается последовательность команд через ; и через && в bash? Например:
-root@vagrant:~# test -d /tmp/some_dir; echo Hi
+root@vagrant: ~# test -d /tmp/some_dir; echo Hi
 Hi
 root@vagrant:~# test -d /tmp/some_dir && echo Hi
 root@vagrant:~#
