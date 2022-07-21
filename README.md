@@ -594,11 +594,11 @@ In 2012, the IETF defined a Shared Address Space[4] for use in ISP CGN deploymen
 
 
 2. Попробуйте использовать команду file на объекты разных типов на файловой системе. Например:
-vagrant@vagrant:~$ file /dev/tty
+vagrant@vagrant: ~$ file /dev/tty
 /dev/tty: character special (5/0)
-vagrant@vagrant:~$ file /dev/sda
+vagrant@vagrant: ~$ file /dev/sda
 /dev/sda: block special (8/0)
-vagrant@vagrant:~$ file /bin/bash
+vagrant@vagrant: ~$ file /bin/bash
 /bin/bash: ELF 64-bit LSB shared object, x86-64
 Используя strace выясните, где находится база данных file на основании которой она делает свои догадки.
 
