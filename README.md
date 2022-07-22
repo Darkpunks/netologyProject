@@ -950,43 +950,74 @@ descr: Net By Net Holding LLC
 
 Ответ: провайдер: 
 Трассировка маршрута к dns.google [8.8.8.8]
+ 
 с максимальным числом прыжков 30:
 
   1    <1 мс    <1 мс     1 ms  192.168.3.1
+ 
   2     2 ms     2 ms     3 ms  msk-b26-e3.ti.ru [212.1.254.202]
+ 
   3     3 ms     3 ms     3 ms  212.1.243.148
+ 
   4     3 ms     4 ms     5 ms  212.1.251.66
+ 
   5     7 ms     4 ms     3 ms  72.14.215.172
+ 
   6     5 ms     5 ms     5 ms  108.170.250.33
+ 
   7     3 ms     5 ms     4 ms  108.170.250.51
+ 
   8    16 ms    15 ms    15 ms  72.14.234.20
+ 
   9    19 ms    18 ms    24 ms  72.14.232.190
+ 
  10    18 ms    18 ms    18 ms  172.253.64.57
+ 
  11     *        *        *     Превышен интервал ожидания для запроса.
+ 
  12     *        *        *     Превышен интервал ожидания для запроса.
+ 
  13     *        *        *     Превышен интервал ожидания для запроса.
+ 
  14     *        *        *     Превышен интервал ожидания для запроса.
+ 
  15     *        *        *     Превышен интервал ожидания для запроса.
+ 
  16     *        *        *     Превышен интервал ожидания для запроса.
+ 
  17     *        *        *     Превышен интервал ожидания для запроса.
+ 
  18     *        *        *     Превышен интервал ожидания для запроса.
+ 
  19     *        *        *     Превышен интервал ожидания для запроса.
+ 
  20    15 ms    15 ms    14 ms  dns.google [8.8.8.8]
 
 проходит через сети:
+ 
 192.168.3.1 - мой роутер
+ 
 212.1.254.202 - провайдер netname: TI-INTERNAL, descr: internal infrastructure NetByNet holding
+ 
 212.1.243.148  - netname: ALTAIR-RU, descr: Altair-net Network Moscow NetByNet holding
+ 
 212.1.251.66  - netname: TI-INTERNAL descr: internal infrastructure NetByNet holding
+ 
 72.14.215.172 - NetName: GOOGLE NetHandle: NET-72-14-192-0-1 Google LLC
+ 
 108.170.250.33 - NetName: GOOGLE NetHandle: NET-108-170-192-0-1 Google LLC
+ 
 108.170.250.51 - NetName: GOOGLE NetHandle: NET-108-170-192-0-1 Google LLC
+ 
 72.14.234.20 - NetName: GOOGLE NetHandle: NET-72-14-192-0-1 Google LLC
+ 
 72.14.232.190 - NetName: GOOGLE NetHandle: NET-72-14-192-0-1 Google LLC
+ 
 172.253.64.57 - NetName: GOOGLE NetHandle: NET-172-253-0-0-1 Google LLC
 
 
 6. Повторите задание 5 в утилите mtr. На каком участке наибольшая задержка - delay?
+ 
 
 Ответ: наибольшая задержка между 108.170.250.51 (средняя 4 мс) и 72.14.234.20 (средняя 15 мс)
 
@@ -994,25 +1025,35 @@ descr: Net By Net Holding LLC
 7. Какие DNS сервера отвечают за доменное имя dns.google? Какие A записи? воспользуйтесь утилитой dig
 
 Ответ: 
+ 
 8.8.8.8
+ 
 8.8.4.4
 
 
 ;; ANSWER SECTION:
+ 
 dns.google.             176     IN      A       8.8.8.8
+ 
 dns.google.             176     IN      A       8.8.4.4
 
 [ivan@localhost ~]$ dig dns.google +nssearch
+ 
 SOA ns1.zdns.google. cloud-dns-hostmaster.google.com. 1 21600 3600 259200 300 from server 216.239.38.114 in 16 ms.
+ 
 SOA ns1.zdns.google. cloud-dns-hostmaster.google.com. 1 21600 3600 259200 300 from server 216.239.36.114 in 19 ms.
+ 
 SOA ns1.zdns.google. cloud-dns-hostmaster.google.com. 1 21600 3600 259200 300 from server 216.239.34.114 in 46 ms.
+ 
 SOA ns1.zdns.google. cloud-dns-hostmaster.google.com. 1 21600 3600 259200 300 from server 216.239.32.114 in 48 ms.
 
 
 8. Проверьте PTR записи для IP адресов из задания 7. Какое доменное имя привязано к IP? воспользуйтесь утилитой dig
 
 Ответ: 
+ 
 ANSWER SECTION:
+ 
 8.8.8.8.in-addr.arpa.   75016   IN      PTR     dns.google.
 
 ptr адресс - 8.8.8.8.in-addr.arpa.
