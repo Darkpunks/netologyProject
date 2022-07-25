@@ -11,12 +11,13 @@ __________________________________________________________________________
 
 
 2. Попробуйте использовать команду file на объекты разных типов на файловой системе. Например:
-vagrant@vagrant: ~$ file /dev/tty
+vagrant@netology1:~$ file /dev/tty
 /dev/tty: character special (5/0)
-vagrant@vagrant: ~$ file /dev/sda
+vagrant@netology1:~$ file /dev/sda
 /dev/sda: block special (8/0)
-vagrant@vagrant: ~$ file /bin/bash
+vagrant@netology1:~$ file /bin/bash
 /bin/bash: ELF 64-bit LSB shared object, x86-64
+
 Используя strace выясните, где находится база данных file на основании которой она делает свои догадки.
 
 ОТВЕТ:
