@@ -27,8 +27,11 @@ openat(AT_FDCWD, "/usr/share/misc/magic.mgc", O_RDONLY) = 3
 
 происходит поиск файлов пользователей
 stat("/home/piv/.magic.mgc", 0x7ffedefbea50) = -1 ENOENT (Нет такого файла или каталога)
+
 stat("/home/piv/.magic", 0x7ffedefbea50) = -1 ENOENT (Нет такого файла или каталога)
+
 stat("/etc/magic", {st_mode=S_IFREG|0644, st_size=111, ...}) = 0
+
 openat(AT_FDCWD, "/etc/magic", O_RDONLY) = 3
 
 
@@ -45,8 +48,11 @@ nc        13049         ivan    1w      REG  253,0       105 50331728 /home/ivan
 [ivan@localhost ~]$ ll /proc/13049/fd
 
 lrwx------. 1 ivan ivan 64 Jul 20 21:23 0 -> /dev/pts/1
+
 l-wx------. 1 ivan ivan 64 Jul 20 21:23 1 -> /home/ivan/file (deleted)
+
 lrwx------. 1 ivan ivan 64 Jul 20 21:23 2 -> /dev/pts/1
+
 lrwx------. 1 ivan ivan 64 Jul 20 21:23 5 -> socket:[36294]
 
 И с помощью echo обнулил дискриптор: 
