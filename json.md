@@ -47,9 +47,9 @@
 
 ### Ваш скрипт:
 ```python
-import socket, sys, json
+import json, socket, sys, yaml
 
-HISTORY_FILE = 'history.json'
+HISTORY_FILE = 'history'
 
 
 def main():
@@ -69,8 +69,8 @@ def main():
 def load_history(filename):
   
   try:
-    with open(filename) as f:
-      return json.load(f)
+    with open(filename+".yaml") as f:
+      return yaml.safe_load(f)
 
   except FileNotFoundError:
     print('History bot found, creating new history')
@@ -79,9 +79,11 @@ def load_history(filename):
 
 def save_history(file, history):
 
-  with open(file, 'w') as f:
-    json.dump(history, f)
+  with open(file+".yaml", 'w') as f:
+    yaml.dump(history, f)
 
+  with open(file+".json", 'w') as f:
+    json.dump(history, f)
 
 def process_host(hostname, known_names):
 
