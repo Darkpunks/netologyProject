@@ -16,12 +16,6 @@ show bgp x.x.x.x/32
 
 route-views>show ip route 95.220.24.101/32
 
-                                       ^
-% Invalid input detected at '^' marker.
-
-
-route-views>show ip route 95.220.24.101
-
 Routing entry for 95.220.0.0/16
 
   Known via "bgp 6447", distance 20, metric 0
