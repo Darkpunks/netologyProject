@@ -1,193 +1,252 @@
 __________________________________________________________________________
- 3.4. Операционные системы, лекция 2"
+ 3.9. Элементы безопасности информационных систем
 __________________________________________________________________________
-1. На лекции мы познакомились с node_exporter. В демонстрации его исполняемый файл запускался в background. Этого достаточно для демо, но не для настоящей production-системы, где процессы должны находиться под внешним управлением. Используя знания из лекции по systemd, создайте самостоятельно простой unit-файл для node_exporter:
-поместите его в автозагрузку,
-предусмотрите возможность добавления опций к запускаемому процессу через внешний файл (посмотрите, например, на systemctl cat cron),
-удостоверьтесь, что с помощью systemctl процесс корректно стартует, завершается, а после перезагрузки автоматически поднимается.
+1. Установите Bitwarden плагин для браузера. Зарегестрируйтесь и сохраните несколько паролей.
 
+Сделал: скрин
+2. Установите Google authenticator на мобильный телефон. Настройте вход в Bitwarden акаунт через Google authenticator OTP.
+
+Сделал: скрин
+3. Установите apache2, сгенерируйте самоподписанный сертификат, настройте тестовый сайт для работы по HTTPS.
+__________________________________________________________________________
+OТВЕТ:
+__________________________________________________________________________
+устанавливаем apache и включаем модуль SSl, разрешаем доступ в firewall (ufw)
+sudo apt install apache2
+
+sudo ufw allow "Apache Full"
+
+sudo a2enmod ssl
+
+sudo systemctl restart apache2
+
+Создаем SSL ключ 
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/apache-selfsigned.key -out /etc/ssl/certs/apache-selfsigned.crt
+
+Country Name (2 letter code) [AU]:RU
+
+State or Province Name (full name) [Some-State]:moscow region
+
+Locality Name (eg, city) []:Dmitrov
+
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:piv
+
+Organizational Unit Name (eg, section) []:piv
+
+Common Name (e.g. server FQDN or YOUR name) []:piv
+
+Email Address []:piv
+
+добавляем виртуальных хост
+
+ivan@ubuntu-focal:~$ sudo nano /etc/apache2/sites-available/docxz.cf.conf
+
+
+<VirtualHost *:443>
+   ServerName docxz.cf
+   DocumentRoot /var/www/docxz.cf
+
+   SSLEngine on
+   SSLCertificateFile /etc/ssl/certs/apache-selfsigned.crt
+   SSLCertificateKeyFile /etc/ssl/private/apache-selfsigned.key
+</VirtualHost>
+
+добавляем директорию для сайта
+
+ivan@ubuntu-focal:~$ sudo mkdir /var/www/docxz.cf
+
+создаем тестовую страницу
+
+ivan@ubuntu-focal:~$ sudo nano /var/www/docxz.cf/index.html
+
+вквлюаем сайт, проверяем конфиг:
+
+ivan@ubuntu-focal:~$ sudo a2ensite docxz.cf.conf
+Enabling site docxz.cf.
+To activate the new configuration, you need to run:
+  systemctl reload apache2 
+
+ivan@ubuntu-focal:~$ sudo apache2ctl configtest
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 127.0.1.1. Set the 'ServerName' directive globally to suppress this message
+Syntax OK
+
+
+Перезагружаем apache:
+
+ivan@ubuntu-focal:~$ sudo systemctl reload apache2
+
+
+4. Проверьте на TLS уязвимости произвольный сайт в интернете (кроме сайтов МВД, ФСБ, МинОбр, НацБанк, РосКосмос, РосАтом, РосНАНО и любых госкомпаний, объектов КИИ, ВПК ... и тому подобное).
+__________________________________________________________________________
 ОТВЕТ:
-Запустилось. 
+__________________________________________________________________________
+Проверял на сайте ok.ru
+часть вывода
 
-HELP go_gc_duration_seconds A summary of the pause duration of garbage collection cycles.
+Apple ATS 9 iOS 9            TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256, 256 bit ECDH (P-256)
 
-TYPE go_gc_duration_seconds summary
-
-go_gc_duration_seconds{quantile="0"} 0
-
-go_gc_duration_seconds{quantile="0.25"} 0
-
-go_gc_duration_seconds{quantile="0.5"} 0
-
-go_gc_duration_seconds{quantile="0.75"} 0
-
-go_gc_duration_seconds{quantile="1"} 0
-
-go_gc_duration_seconds_sum 0
-
-go_gc_duration_seconds_count 0
-
-HELP go_goroutines Number of goroutines that currently exist.
-
-TYPE go_goroutines gauge
-
-go_goroutines 8
-
-HELP go_info Information about the Go environment.
-
-TYPE go_info gauge
-
-
-и т.д.
-
-Провериили запуски остановку процесса
-
-[ivan@localhost node_exporter-1.3.1.linux-amd64]$ vi /etc/systemd/system/node_exporter.service
+ Java 6u45                    No connection
  
-и задали данные для unit файла:
-
-[Unit]
-Description=Node Exporter
+ Java 7u25                    TLSv1.0 ECDHE-RSA-AES128-SHA, 256 bit ECDH (P-256)
  
-[Service]
-ExecStart=/var/lib/node_exporter/node_exporter
-EnvironmentFile=/etc/default/node_exporter
+ Java 8u161                   TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256, 256 bit ECDH (P-256)
  
-[Install]
-WantedBy=default.target
+ Java 11.0.2 (OpenJDK)        TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256, 256 bit ECDH (P-256)
+ 
+ Java 12.0.1 (OpenJDK)        TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256, 256 bit ECDH (P-256)
+ 
+ OpenSSL 1.0.2e               TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256, 256 bit ECDH (P-256)
+ 
+ OpenSSL 1.1.0l (Debian)      TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256, 253 bit ECDH (X25519)
+ 
+ OpenSSL 1.1.1d (Debian)      TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256, 253 bit ECDH (X25519)
+ 
+ Thunderbird (68.3)           TLSv1.2 ECDHE-RSA-AES128-GCM-SHA256, 253 bit ECDH (X25519)
 
-создаем файл: 
-[ivan@localhost node_exporter-1.3.1.linux-amd64]$ sudo vi /etc/systemd/system/node_exporter.service
+ Done 2022-07-25 19:15:21 [ 212s] -->> 217.20.155.13:443 (ok.ru) <<--
 
-
-запускаем: 
-sudo systemctl start node_exporter
-
-добавляем в автозагрузку: 
-
-[ivan@localhost node_exporter-1.3.1.linux-amd64]$ sudo systemctl enable node_exporter
-
-
-узнаем статус: 
-[ivan@localhost node_exporter-1.3.1.linux-amd64]$ sudo systemctl status node_exporter
-
-● node_exporter.service - Node Exporter
-   Loaded: loaded (/etc/systemd/system/node_exporter.service; disabled; vendor preset: disabled)
-   Active: active (running) since Wed 2022-07-20 22:10:41 MSK; 17s ago
- Main PID: 30749 (node_exporter)
-   CGroup: /system.slice/node_exporter.service
-           └─30749 /var/lib/node_exporter/node_exporter
-
-Jul 20 22:10:41 localhost.localdomain node_exporter[30749]: ts=2022-07-20T19:10:41.821Z caller=node_exporter.go:115 lev...zone
-Jul 20 22:10:41 localhost.localdomain node_exporter[30749]: ts=2022-07-20T19:10:41.821Z caller=node_exporter.go:115 lev...time
-Jul 20 22:10:41 localhost.localdomain node_exporter[30749]: ts=2022-07-20T19:10:41.821Z caller=node_exporter.go:115 lev...imex
-Jul 20 22:10:41 localhost.localdomain node_exporter[30749]: ts=2022-07-20T19:10:41.821Z caller=node_exporter.go:115 lev...eues
-Jul 20 22:10:41 localhost.localdomain node_exporter[30749]: ts=2022-07-20T19:10:41.821Z caller=node_exporter.go:115 lev...name
-Jul 20 22:10:41 localhost.localdomain node_exporter[30749]: ts=2022-07-20T19:10:41.821Z caller=node_exporter.go:115 lev...stat
-Jul 20 22:10:41 localhost.localdomain node_exporter[30749]: ts=2022-07-20T19:10:41.821Z caller=node_exporter.go:115 lev...=xfs
-Jul 20 22:10:41 localhost.localdomain node_exporter[30749]: ts=2022-07-20T19:10:41.821Z caller=node_exporter.go:115 lev...=zfs
-Jul 20 22:10:41 localhost.localdomain node_exporter[30749]: ts=2022-07-20T19:10:41.821Z caller=node_exporter.go:199 lev...9100
-Jul 20 22:10:41 localhost.localdomain node_exporter[30749]: ts=2022-07-20T19:10:41.821Z caller=tls_config.go:195 level=...alse
-Hint: Some lines were ellipsized, use -l to show in full.
+------------------------------------------------------------------------------------
+Done testing now all IP addresses (on port 443): 5.61.23.11 217.20.147.1 217.20.155.13
 
 
-2. Ознакомьтесь с опциями node_exporter и выводом /metrics по-умолчанию. Приведите несколько опций, которые вы бы выбрали для базового мониторинга хоста по CPU, памяти, диску и сети.
+не понравился только 1 пункт 
 
+ TLS 1      offered (deprecated)
+ 
+ TLS 1.1    offered (deprecated)
+
+По идее устаревшие протоколы TLS
+
+
+
+5. Установите на Ubuntu ssh сервер, сгенерируйте новый приватный ключ. Скопируйте свой публичный ключ на другой сервер. Подключитесь к серверу по SSH-ключу.
+__________________________________________________________________________
 ОТВЕТ:
-Отключили собственные метрики node exporter и включили статусы systemd сервисы 
-идем во 2 файл и меняем его: sudo vi /etc/default/node_exporter
-
-OPTIONS=--web.disable-exporter-metrics --collector.systemd
-
-и меняем unit файл
-
-[Unit]
-Description=Node Exporter
- 
-[Service]
-ExecStart=/var/lib/node_exporter/node_exporter $OPTIONS
-EnvironmentFile=/etc/default/node_exporter
- 
-[Install]
-WantedBy=default.target
-
-перечитываем сервис файл sudo systemctl daemon-reload
-
-[ivan@localhost node_exporter-1.3.1.linux-amd64]$ sudo systemctl restart node_exporter
-[ivan@localhost node_exporter-1.3.1.linux-amd64]$ sudo systemctl status node_exporter
-● node_exporter.service - Node Exporter
-   Loaded: loaded (/etc/systemd/system/node_exporter.service; enabled; vendor preset: disabled)
-   Active: active (running) since Wed 2022-07-20 22:40:04 MSK; 3s ago
- Main PID: 41371 (node_exporter)
-   CGroup: /system.slice/node_exporter.service
-           └─41371 /var/lib/node_exporter/node_exporter --web.disable-exporter-metrics --collector.systemd
+__________________________________________________________________________
+[ivan@localhost ~]$ ssh ivan@192.168.5.108
+The authenticity of host '192.168.5.108 (192.168.5.108)' can't be established.
+ECDSA key fingerprint is SHA256:0j2Ig8JVTy+LnmtkFwIgnRihu/Dekjnt6IvVMeSM5s8.
+ECDSA key fingerprint is MD5:56:e1:74:71:2a:51:87:5e:c2:ba:87:2c:91:47:9a:34.
 
 
 
-CPU, RAM, Disk включены по умолчанию:  
---collector.cpu  
---collector.diskstats
---collector.nvme 
---collector.meminfo 
+[ivan@localhost ~]$ ssh-keygen
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/ivan/.ssh/id_rsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/ivan/.ssh/id_rsa.
+Your public key has been saved in /home/ivan/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:GKm7h40NA+2HylTC9XcTxbWu0rQi6KDsl+ozi1YCnXY ivan@localhost.localdomain
+The key's randomart image is:
++---[RSA 2048]----+
+|           o...  |
+
+|    .  .  . .  . |
+
+| o + .o    .  .  |
+
+|. B E..o. o  .   |
+
+|.. *....S. .. .  |
+
+| ...=...   o o   |
+
+| oo.oX. . o +    |
+
+| +=.=++  . o     |
+
+|ooB*...          |
+
++----[SHA256]-----+
+
+Скопируем ID , пишет какой ключ [RSA 2048] генерирует. мы также можем его поменять. 
+
+[ivan@localhost ~]$ ssh-copy-id ivan@192.168.5.108
+/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: "/home/ivan/.ssh/id_rsa.pub"
+/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed
+/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- if you are prompted now it is to install the new keys
+ivan@192.168.5.108's password:
+
+Number of key(s) added: 1
+
+Now try logging into the machine, with:   "ssh 'ivan@192.168.5.108'"
+and check to make sure that only the key(s) you wanted were added.
 
 
-3. Установите в свою виртуальную машину Netdata. Воспользуйтесь готовыми пакетами для установки (sudo apt install -y netdata). После успешной установки:
-в конфигурационном файле /etc/netdata/netdata.conf в секции [web] замените значение с localhost на bind to = 0.0.0.0,
-добавьте в Vagrantfile проброс порта Netdata на свой локальный компьютер и сделайте vagrant reload:
-config.vm.network "forwarded_port", guest: 19999, host: 19999
-После успешной перезагрузки в браузере на своем ПК (не в виртуальной машине) вы должны суметь зайти на localhost:19999. Ознакомьтесь с метриками, которые по умолчанию собираются Netdata и с комментариями, которые даны к этим метрикам.
 
-ОТВЕТ: Установил, заменил на 0.0.0.0, сделал проброс порта. Ответ на скриншоте по данным машины
-
-4. Можно ли по выводу dmesg понять, осознает ли ОС, что загружена не на настоящем оборудовании, а на системе виртуализации?
-
+6. Переименуйте файлы ключей из задания 5. Настройте файл конфигурации SSH клиента, так чтобы вход на удаленный сервер осуществлялся по имени сервера.
+__________________________________________________________________________
 ОТВЕТ:
-sudo dmesg |grep virtualiz
-[    0.000000] Booting paravirtualized kernel on VMware hypervisor
-[    1.956774] systemd[1]: Detected virtualization vmware.
+__________________________________________________________________________
+[ivan@localhost ~]$ ls .ssh
+
+id_rsa  id_rsa.pub  known_hosts
+
+[ivan@localhost ~]$ mv .ssh/id_rsa .ssh/id_piv
+
+[ivan@localhost ~]$ mv .ssh/id_rsa.pub .ssh/id_piv.pub
+
+теперь при попытке подлючения просит пароль: 
+
+[ivan@localhost ~]$ ssh ivan@192.168.5.108
+
+ivan@192.168.5.108's password:
 
 
-5. Как настроен sysctl fs.nr_open на системе по-умолчанию? Узнайте, что означает этот параметр. Какой другой существующий лимит не позволит достичь такого числа (ulimit --help)?
+б) создаем файл конфига
 
-ОТВЕТ:
-sudo sysctl -n fs.nr_open
-1048576
+touch ~/.ssh/config
 
-Для пользователя задать больше этого числа нельзя. За исключение если поменять данные
-Если задается кратное 1024, то получается =1024*1024. 
+chmod 600 ~/.ssh/config
 
-Если  хотим проверить максимуу :
-cat /proc/sys/fs/file-max
-9223372036854775807
+Вносим в данные конфига
 
-Другой существующий лимит не позволит достичь такого числа:
-ulimit -Sn
-1024
+Host pivhost
 
-6. Запустите любой долгоживущий процесс (не ls, который отработает мгновенно, а, например, sleep 1h) в отдельном неймспейсе процессов; покажите, что ваш процесс работает под PID 1 через nsenter. Для простоты работайте в данном задании под root (sudo -i). Под обычным пользователем требуются дополнительные опции (--map-root-user) и т.д.
+    HostName 192.168.5.108
+    User ivan
+    Port 22
+    IdentityFile ~/.ssh/id_piv
 
-ОТВЕТ:
-ps -e |grep sleep
-   1910 pts/2    00:00:00 sleep
-nsenter --target 1910 --pid --mount
-ps
-    PID TTY          TIME CMD
-      2 pts/0    00:00:00 bash
-     11 pts/0    00:00:00 ps
+теперь подключается по имени сервера: 
 
-7. Найдите информацию о том, что такое :(){ :|:& };:. Запустите эту команду в своей виртуальной машине Vagrant с Ubuntu 20.04 (это важно, поведение в других ОС не проверялось). Некоторое время все будет "плохо", после чего (минуты) – ОС должна стабилизироваться. Вызов dmesg расскажет, какой механизм помог автоматической стабилизации. Как настроен этот механизм по-умолчанию, и как изменить число процессов, которое можно создать в сессии?
+[ivan@localhost ~]$ ssh pivhost
 
-ОТВЕТ:
-Запустил.
-таким образом это функция, которая параллельно пускает два своих экземпляра. Каждый пускает ещё по два и т.д. – получается словно «ветвление»
-При отсутствии лимита на число процессов машина быстро исчерпывает физическую память и уходит в своп.
+Welcome to Ubuntu 20.04.4 LTS (GNU/Linux 5.4.0-122-generic x86_64)
 
-Нашел такой функционал:
-[ 3099.973235] cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/session-4.scope
-[ 3103.171819] cgroup: fork rejected by pids controller in /user.slice/user-1000.slice/session-11.scope
+ * Documentation:  https://help.ubuntu.com
 
-Система опираясь на файлы предложенные выше, показывает что в пользовательской зоне ресурсов имеет определенное ограничение на новые ресурсы и как только происходит превышение – происходит блокировка ресурсов.
+ * Management:     https://landscape.canonical.com
 
-Изменить число процессов, которое можно создать в сессии:
-ulimit -u 20 - число процессов будет ограниченно 20 для пользователя.
- 
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Mon Jul 25 19:36:33 UTC 2022
+
+  System load:  0.04              Processes:               129
+  
+  Usage of /:   4.5% of 38.70GB   Users logged in:         2
+  
+  Memory usage: 28%               IPv4 address for enp0s3: 192.168.5.108
+  
+  Swap usage:   0%
+
+ * Super-optimized for small spaces - read how we shrank the memory
+   footprint of MicroK8s to make it the smallest full K8s around.
+
+   https://ubuntu.com/blog/microk8s-memory-optimisation
+
+1 update can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+
+Last login: Mon Jul 25 19:10:45 2022 from 192.168.5.157
+
+
+7. Соберите дамп трафика утилитой tcpdump в формате pcap, 100 пакетов. Откройте файл pcap в Wireshark.
+__________________________________________________________________________
+ОТВЕТ: 100 пакетов: 
+__________________________________________________________________________
+ivan@ubuntu-focal:~$ sudo tcpdump -c 100 -w dump.pcap 
+Приложил рсар файл
