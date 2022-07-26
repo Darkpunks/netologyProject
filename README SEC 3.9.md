@@ -8,7 +8,71 @@ __________________________________________________________________________
 
 Сделал: скрин
 3. Установите apache2, сгенерируйте самоподписанный сертификат, настройте тестовый сайт для работы по HTTPS.
-ОТВЕТ:
+
+ТВЕТ:
+устанавливаем apache и включаем модуль SSl, разрешаем доступ в firewall (ufw)
+sudo apt install apache2
+
+sudo ufw allow "Apache Full"
+
+sudo a2enmod ssl
+
+sudo systemctl restart apache2
+
+Создаем SSL ключ 
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/ssl/private/apache-selfsigned.key -out /etc/ssl/certs/apache-selfsigned.crt
+
+Country Name (2 letter code) [AU]:RU
+
+State or Province Name (full name) [Some-State]:moscow region
+
+Locality Name (eg, city) []:Dmitrov
+
+Organization Name (eg, company) [Internet Widgits Pty Ltd]:piv
+
+Organizational Unit Name (eg, section) []:piv
+
+Common Name (e.g. server FQDN or YOUR name) []:piv
+
+Email Address []:piv
+
+добавляем виртуальных хост
+
+ivan@ubuntu-focal:~$ sudo nano /etc/apache2/sites-available/docxz.cf.conf
+
+
+<VirtualHost *:443>
+   ServerName docxz.cf
+   DocumentRoot /var/www/docxz.cf
+
+   SSLEngine on
+   SSLCertificateFile /etc/ssl/certs/apache-selfsigned.crt
+   SSLCertificateKeyFile /etc/ssl/private/apache-selfsigned.key
+</VirtualHost>
+
+добавляем директорию для сайта
+
+ivan@ubuntu-focal:~$ sudo mkdir /var/www/docxz.cf
+
+создаем тестовую страницу
+
+ivan@ubuntu-focal:~$ sudo nano /var/www/docxz.cf/index.html
+
+вквлюаем сайт, проверяем конфиг:
+
+ivan@ubuntu-focal:~$ sudo a2ensite docxz.cf.conf
+Enabling site docxz.cf.
+To activate the new configuration, you need to run:
+  systemctl reload apache2 
+
+ivan@ubuntu-focal:~$ sudo apache2ctl configtest
+AH00558: apache2: Could not reliably determine the server's fully qualified domain name, using 127.0.1.1. Set the 'ServerName' directive globally to suppress this message
+Syntax OK
+
+
+Перезагружаем apache:
+
+ivan@ubuntu-focal:~$ sudo systemctl reload apache2
 
 
 4. Проверьте на TLS уязвимости произвольный сайт в интернете (кроме сайтов МВД, ФСБ, МинОбр, НацБанк, РосКосмос, РосАтом, РосНАНО и любых госкомпаний, объектов КИИ, ВПК ... и тому подобное).
@@ -75,14 +139,23 @@ SHA256:GKm7h40NA+2HylTC9XcTxbWu0rQi6KDsl+ozi1YCnXY ivan@localhost.localdomain
 The key's randomart image is:
 +---[RSA 2048]----+
 |           o...  |
+
 |    .  .  . .  . |
+
 | o + .o    .  .  |
+
 |. B E..o. o  .   |
+
 |.. *....S. .. .  |
+
 | ...=...   o o   |
+
 | oo.oX. . o +    |
+
 | +=.=++  . o     |
+
 |ooB*...          |
+
 +----[SHA256]-----+
 
 Скопируем ID , пишет какой ключ [RSA 2048] генерирует. мы также можем его поменять. 
