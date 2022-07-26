@@ -1,191 +1,52 @@
-# Домашнее задание к занятию "4.2. Использование Python для решения типовых DevOps задач"
+### Как сдавать задания
+
+Вы уже изучили блок «Системы управления версиями», и начиная с этого занятия все ваши работы будут приниматься ссылками на .md-файлы, размещённые в вашем публичном репозитории.
+
+Скопируйте в свой .md-файл содержимое этого файла; исходники можно посмотреть [здесь](https://raw.githubusercontent.com/netology-code/sysadm-homeworks/devsys10/04-script-03-yaml/README.md). Заполните недостающие части документа решением задач (заменяйте `???`, ОСТАЛЬНОЕ В ШАБЛОНЕ НЕ ТРОГАЙТЕ чтобы не сломать форматирование текста, подсветку синтаксиса и прочее, иначе можно отправиться на доработку) и отправляйте на проверку. Вместо логов можно вставить скриншоты по желани.
+
+# Домашнее задание к занятию "4.3. Языки разметки JSON и YAML"
+
 
 ## Обязательная задача 1
-
-Есть скрипт:
-```python
-#!/usr/bin/env python3
-a = 1
-b = '2'
-c = a + b
+Мы выгрузили JSON, который получили через API запрос к нашему сервису:
 ```
-
-### Вопросы:
-| Вопрос  | Ответ |
-| ------------- | ------------- |
-| Какое значение будет присвоено переменной `c`?  | Возникнет ошибка, (не соответствие типы переменных, нельзя сложить строку и число, питон так не умеет)  |
-| Как получить для переменной `c` значение 12?  | надо добавить кавычки‘1’   |
-| Как получить для переменной `c` значение 3?  | надо убрать из  переменной b (‘2’), кавычки и оставить просто число |
+    { "info" : "Sample JSON output from our service\t",
+        "elements" :[
+            { "name" : "first",
+            "type" : "server",
+            "ip" : 7175 
+            }
+            { "name" : "second",
+            "type" : "proxy",
+            "ip : 71.78.22.43
+            }
+        ]
+    }
+```
+  Нужно найти и исправить все ошибки, которые допускает наш сервис
+  
+  
+  ОТВЕТ: 
+```
+   { "info" : "Sample JSON output from our service\t",
+        "elements" :[
+            { "name" : "first",
+            "type" : "server",
+            "ip" : "7175" 
+            },
+            { "name" : "second",
+            "type" : "proxy",
+            "ip" : "71.78.22.43"
+            }
+        ]
+    }
+```
 
 ## Обязательная задача 2
-Мы устроились на работу в компанию, где раньше уже был DevOps Engineer. Он написал скрипт, позволяющий узнать, какие файлы модифицированы в репозитории, относительно локальных изменений. Этим скриптом недовольно начальство, потому что в его выводе есть не все изменённые файлы, а также непонятен полный путь к директории, где они находятся. Как можно доработать скрипт ниже, чтобы он исполнял требования вашего руководителя?
-
-```python
-#!/usr/bin/env python3
-
-import os
-
-bash_command = ["cd ~/netology/sysadm-homeworks", "git status"]
-result_os = os.popen(' && '.join(bash_command)).read()
-is_change = False
-for result in result_os.split('\n'):
-    if result.find('modified') != -1:
-        prepare_result = result.replace('\tmodified:   ', '')
-        print(prepare_result)
-        break
-```
+В прошлый рабочий день мы создавали скрипт, позволяющий опрашивать веб-сервисы и получать их IP. К уже реализованному функционалу нам нужно добавить возможность записи JSON и YAML файлов, описывающих наши сервисы. Формат записи JSON по одному сервису: `{ "имя сервиса" : "его IP"}`. Формат записи YAML по одному сервису: `- имя сервиса: его IP`. Если в момент исполнения скрипта меняется IP у сервиса - он должен так же поменяться в yml и json файле.
 
 ### Ваш скрипт:
 ```python
-import os
-
-DIR = '~/netology/sysadm-homeworks'
-
-bash_command = [f"cd {DIR} 2>&1", "pwd", "git status --porcelain 2>&1"]
-
-result_os = os.popen(' && '.join(bash_command)).read().split('\n')
-
-#first string is our basepath
-project_dir = result_os.pop(0)
-
-#if cd command rerutns something like "/bin/sh: line 0: cd: " assuming no such dir
-if project_dir.find('/bin/sh: line 0: cd:') != -1: 
-  print('No such dir')
-  exit(2)
-
-#if git command rerutns something like "fatal: Not a git repository ..." assuming not a repository
-if result_os[0].find('fatal:') != -1: 
-  print('Not a repo')
-  exit(2)
-
-#remove tailing empty string
-if result_os[-1] == '':
-    result_os.pop()
-
-def resolve_status(status):
-    status_mapping = {
-      'M': 'modified',
-      'A': 'added',
-      'D': 'deleted',
-      'R': 'renamed',
-      'C': 'copied',
-      'U': 'updated',
-      '??': 'untracked'
-  }
-    try:
-        return status_mapping[status]
-    except KeyError:
-        return status
-
-
-for f in result_os:
-    status = resolve_status(f[0:2].strip())
-    path = os.path.join(project_dir, f[3:len(f)])
-
-    print(f'{status}: {path}')
-
-```
-
-### Вывод скрипта при запуске при тестировании:
-```
-Он не должен принимать никакие параметры и просто искать в папке
-Например, 
-Если удалить папку или файлы то он найдет их тоже 
-[root@localhost ivan]# python3 test.py /home/ivan/sysadm-homeworks/
-deleted: /home/ivan/sysadm-homeworks/01-intro-01/README.md
- клонировал репозиторий и изменил только один файл и он вывел его. 
-[root@localhost ivan]# python3 test.py /home/ivan/sysadm-homeworks/
-untracked: /home/ivan/sysadm-homeworks/Readme.md                                                                                                          
-```
-
-## Обязательная задача 3
-1. Доработать скрипт выше так, чтобы он мог проверять не только локальный репозитори                                                                                         й в текущей директории, а также умел воспринимать путь к репозиторию, который мы передаём как входной параметр. Мы точно знаем, что начальство коварное и будет проверять работу этого скрипта в директориях, которые не являются локальными репозиториями.
-
-### Ваш скрипт:
-```python
-import os, sys
-
-DIR = '~/netology/sysadm-homeworks'
-
-try:
-    DIR = sys.argv[1]
-except IndexError:
-    pass
-
-bash_command = [f"cd {DIR} 2>&1", "pwd", "git status --porcelain 2>&1"]
-
-result_os = os.popen(' && '.join(bash_command)).read().split('\n')
-
-#first string is our basepath
-project_dir = result_os.pop(0)
-
-#if cd command rerutns something like "/bin/sh: line 0: cd: " assuming no such dir
-if project_dir.find('/bin/sh: line 0: cd:') != -1: 
-  print('No such dir')
-  exit(2)
-
-#if git command rerutns something like "fatal: Not a git repository ..." assuming not a repository
-if result_os[0].find('fatal:') != -1: 
-  print('Not a repo')
-  exit(2)
-
-#remove tailing empty string
-if result_os[-1] == '':
-    result_os.pop()
-
-def resolve_status(status):
-    status_mapping = {
-      'M': 'modified',
-      'A': 'added',
-      'D': 'deleted',
-      'R': 'renamed',
-      'C': 'copied',
-      'U': 'updated',
-      '??': 'untracked'
-  }
-    try:
-        return status_mapping[status]
-    except KeyError:
-        return status
-
-
-for f in result_os:
-    status = resolve_status(f[0:2].strip())
-    path = os.path.join(project_dir, f[3:len(f)])
-
-    print(f'{status}: {path}') 
-
-```
-
-### Вывод скрипта при запуске при тестировании:
-```
-Вывод похож на вторую задачу только принимает путь в параметр. 
-Например, клонировал репозиторий и изменил только один файл и он вывел его. 
-[root@localhost ivan]# python3 test.py /home/ivan/sysadm-homeworks/
-untracked: /home/ivan/sysadm-homeworks/Readme.md
-
-Если удалить папку или файлы то он найдет их тоже 
-[root@localhost ivan]# python3 test.py /home/ivan/sysadm-homeworks/
-deleted: /home/ivan/sysadm-homeworks/01-intro-01/README.md
-deleted: /home/ivan/sysadm-homeworks/01-intro-01/img/bash.png
-deleted: /home/ivan/sysadm-homeworks/01-intro-01/img/jsonnet.png
-deleted: /home/ivan/sysadm-homeworks/01-intro-01/img/markdown.png
-deleted: /home/ivan/sysadm-homeworks/01-intro-01/img/terraform.png
-deleted: /home/ivan/sysadm-homeworks/01-intro-01/img/yaml.png
-deleted: /home/ivan/sysadm-homeworks/01-intro-01/netology.jsonnet
-deleted: /home/ivan/sysadm-homeworks/01-intro-01/netology.md
-deleted: /home/ivan/sysadm-homeworks/01-intro-01/netology.sh
-deleted: /home/ivan/sysadm-homeworks/01-intro-01/netology.tf
-deleted: /home/ivan/sysadm-homeworks/01-intro-01/netology.yaml
-untracked: /home/ivan/sysadm-homeworks/Readme.md
-```
-
-## Обязательная задача 4
-1. Наша команда разрабатывает несколько веб-сервисов, доступных по http. Мы точно знаем, что на их стенде нет никакой балансировки, кластеризации, за DNS прячется конкретный IP сервера, где установлен сервис. Проблема в том, что отдел, занимающийся нашей инфраструктурой очень часто меняет нам сервера, поэтому IP меняются примерно раз в неделю, при этом сервисы сохраняют за собой DNS имена. Это бы совсем никого не беспокоило, если бы несколько раз сервера не уезжали в такой сегмент сети нашей компании, который недоступен для разработчиков. Мы хотим написать скрипт, который опрашивает веб-сервисы, получает их IP, выводит информацию в стандартный вывод в виде: <URL сервиса> - <его IP>. Также, должна быть реализована возможность проверки текущего IP сервиса c его IP из предыдущей проверки. Если проверка будет провалена - оповестить об этом в стандартный вывод сообщением: [ERROR] <URL сервиса> IP mismatch: <старый IP> <Новый IP>. Будем считать, что наша разработка реализовала сервисы: `drive.google.com`, `mail.google.com`, `google.com`.
-
-### Ваш скрипт:
-```python
-
 import socket, sys, json
 
 HISTORY_FILE = 'history.json'
@@ -250,18 +111,27 @@ def process_host(hostname, known_names):
 
 if __name__ == "__main__":
   main()
-
 ```
 
 ### Вывод скрипта при запуске при тестировании:
 ```
-
 py .\test2.py drive.google.ru google.com  mail.google.com
 drive.google.ru - 87.250.250.242
 google.com - 74.125.131.138
 [ERROR] mail.google.ru IP mismatch: 217.69.139.202 94.100.180.201
 mail.google.com - 209.85.233.18
+```
 
+### json-файл(ы), который(е) записал ваш скрипт:
+```json
+{"drive.google.com": "173.194.221.194", "google.com": "142.250.184.238", "mail.google.com": "142.250.187.101"}
+```
 
+### yml-файл(ы), который(е) записал ваш скрипт:
+```yaml
+drive.google.com: 142.250.186.174
+google.com: 64.233.165.100
+mail.google.com: 64.233.165.18
 
+```
 
