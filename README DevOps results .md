@@ -122,6 +122,7 @@ ivan@ubuntu-focal:/etc/nginx/certs$ sudo nano docxz.cf_renew.sh
 ivan@ubuntu-focal:/etc/nginx/certs$ sudo chmod +x docxz.cf_renew.sh
 ```
 6. Crontab работает (выберите число и время так, чтобы показать что crontab запускается и делает что надо)
+
 Отредактировал через sudo crontab -e: 
 ```
 # запуск скрипта 27 числа в 18:19  каждый месяц:
