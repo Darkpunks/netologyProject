@@ -1,230 +1,130 @@
 __________________________________________________________________________
-Домашнее задание к занятию "3.8. Компьютерные сети, лекция 3"
+Курсовая работа по итогам модуля "DevOps и системное администрирование"
 __________________________________________________________________________
+Результат
+Результатом курсовой работы должны быть снимки экрана или текст:
 
-1. Подключитесь к публичному маршрутизатору в интернет. Найдите маршрут к вашему публичному IP:
-
-telnet route-views.routeviews.org
-
-Username: rviews
-
-show ip route x.x.x.x/32
-
-show bgp x.x.x.x/32
-
-ОТВЕТ: 
-
-route-views>show ip route 95.220.24.101/32
-
-Routing entry for 95.220.0.0/16
-
-  Known via "bgp 6447", distance 20, metric 0
-  
-  Tag 3303, type external
-  
-  Last update from 217.192.89.50 7w0d ago
-  
-  Routing Descriptor Blocks:
-  
-  * 217.192.89.50, from 217.192.89.50, 7w0d ago
-  * 
-      Route metric is 0, traffic share count is 1
-      
-      AS Hops 2
-      
-      Route tag 3303
-      
-      MPLS label: none
-      
-
-Вторая, часть: 
-
-route-views>show bgp 95.220.24.101/32
-
-% Network not in table
-
-Но получилось без: Лучший путь по 21 маршруту. доступно всего 24 маршрута. Вот его часть.
-
-route-views>show bgp 95.220.24.101
-
-BGP routing table entry for 95.220.0.0/16, version 1002848477
-
-Paths: (24 available, best #21, table default)
-
-  Not advertised to any peer
-  
-  Refresh Epoch 1
-  
-  20912 3257 174 12714
-  
-    212.66.96.126 from 212.66.96.126 (212.66.96.126)
-    
-      Origin IGP, localpref 100, valid, external
-      
-      Community: 3257:8070 3257:30155 3257:50001 3257:53900 3257:53902 20912:65004
-      
-      path 7FE0C09CC2E0 RPKI State not found
-      
-      rx pathid: 0, tx pathid: 0
-      
-  Refresh Epoch 1
-  
-  19214 174 12714
-  
-    208.74.64.40 from 208.74.64.40 (208.74.64.40)
-    
-      Origin IGP, localpref 100, valid, external
-      
-      Community: 174:21101 174:22005
-      
-      path 7FE021777C88 RPKI State not found
-      
-      rx pathid: 0, tx pathid: 0
-      
-  Refresh Epoch 1
-  
-  1351 6939 12714
-  
-    132.198.255.253 from 132.198.255.253 (132.198.255.253)
-    
-      Origin IGP, localpref 100, valid, external
-      
-      path 7FE125DFE780 RPKI State not found
-      
-      rx pathid: 0, tx pathid: 0
-      
-  Refresh Epoch 1
-  
-  3267 31133 12714
-  
-    194.85.40.15 from 194.85.40.15 (185.141.126.1)
-    
-      Origin IGP, metric 0, localpref 100, valid, external
-      
-      path 7FE15D41C3C8 RPKI State not found
-      
-      rx pathid: 0, tx pathid: 0
-      
-  Refresh Epoch 1
-  
-  20130 6939 12714
-  
-    140.192.8.16 from 140.192.8.16 (140.192.8.16)
+1. Процесс установки и настройки ufw
 
-Подводя итог: Лучший путь по 21 маршруту. доступно всего 24 маршрута
+ufw в ubuntu установлен по умолчанию
+```
+ivan@ubuntu-focal:~$ sudo ufw allow 22
+Skipping adding existing rule
+Skipping adding existing rule (v6)
 
+ivan@ubuntu-focal:~$ sudo ufw allow 443
+Rule added
+Rule added (v6)
 
-2. Создайте dummy0 интерфейс в Ubuntu. Добавьте несколько статических маршрутов. Проверьте таблицу маршрутизации.
 
-ОТВЕТ:
- создаю интерфейс: 
-загрузка модуля: 
+ivan@ubuntu-focal:~$ sudo ufw enable
+Command may disrupt existing ssh connections. Proceed with operation (y|n)? y
+Firewall is active and enabled on system startup
+```
+2. Процесс установки и выпуска сертификата с помощью hashicorp vault
+```
+ivan@ubuntu-focal:~$ sudo apt install gpg
+Reading package lists... Done
+Building dependency tree
+Reading state information... Done
+gpg is already the newest version (2.2.19-3ubuntu2.2).
+gpg set to manually installed.
+0 upgraded, 0 newly installed, 0 to remove and 1 not upgraded.
+```
+Устанавливаем дальше:
+```
+wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg >/dev/null
 
-[ivan@localhost ~]$ sudo modprobe -v dummy numdummies=1
+gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint
+```
 
-insmod /lib/modules/3.10.0-1160.71.1.el7.x86_64/kernel/drivers/net/dummy.ko.xz numdummies=1
 
-[ivan@localhost ~]$ lsmod | grep dummy
+3. Процесс установки и выпуска сертификата с помощью hashicorp vault
 
-dummy                  12960  0
+Создал СА и выпустил сертификат для своего домена docxz.cf
+```
+vault secrets enable pki
+vault secrets tune -max-lease-ttl=87600h pki
 
-[ivan@localhost ~]$ ip a | grep dummy
+vault write -field=certificate pki/root/generate/internal \
+     common_name="docxz.cf" \
+     issuer_name="docxz-2022" \
+     ttl=87600h > docxz_root_2022_ca.crt
 
-4: dummy0: <BROADCAST,NOARP> mtu 1500 qdisc noop state DOWN group default qlen 1000
+vault write pki/roles/2022-servers allow_any_name=true
 
-Присваиваем ip адрес интерфейса:
 
-[ivan@localhost ~]$ sudo ip addr add 10.10.10.10/24 dev dummy0
+vault write pki/config/urls \
+     issuing_certificates="$VAULT_ADDR/v1/pki/ca" \
+     crl_distribution_points="$VAULT_ADDR/v1/pki/crl"
 
-Запускаю интерфейс: 
 
-[ivan@localhost ~]$ sudo ip link set dummy0 up
+export ISSUE_DOMAIN="docxz.cf"
+export ISSUE_DOMAIN_DIR=$ISSUE_DOMAIN-$(date '+%Y-%m-%d_%H.%m.%S')
 
-добавляю маршруты: 
+mkdir $ISSUE_DOMAIN_DIR
 
-[ivan@localhost ~]$ sudo ip route add 10.10.9.0/24 dev dummy0
+vault write -format=json pki/issue/2022-servers common_name="$ISSUE_DOMAIN" ttl="730h" > $ISSUE_DOMAIN_DIR/$ISSUE_DOMAIN.json
+cat $ISSUE_DOMAIN_DIR/$ISSUE_DOMAIN.json | jq -r '.data.certificate' > $ISSUE_DOMAIN_DIR/$ISSUE_DOMAIN.cert.pem
+cat $ISSUE_DOMAIN_DIR/$ISSUE_DOMAIN.json | jq -r '.data.ca_chain' > $ISSUE_DOMAIN_DIR/$ISSUE_DOMAIN.ca_chain.pem
+cat $ISSUE_DOMAIN_DIR/$ISSUE_DOMAIN.json | jq -r '.data.private_key' > $ISSUE_DOMAIN_DIR/$ISSUE_DOMAIN.cert.key
+```
+3. Процесс установки и настройки сервера nginx
+```
+sudo apt install nginx
 
-[ivan@localhost ~]$ sudo ip route add 10.10.8.0/24 dev dummy0
+sudo systemctl start nginx
 
-[ivan@localhost ~]$ sudo ip route add 10.10.7.0/24 dev dummy0
+sudo systemctl status nginx
 
-[ivan@localhost ~]$ sudo ip route add 10.10.6.0/24 dev dummy0
+создаю файлик docxz.cf в available-sites 
 
+server {
+        listen              443 ssl;
+    server_name         docxz.cf;
+    ssl_certificate     /etc/nginx/certs/docxz.cf/docxz.cf.cert.pem;
+    ssl_certificate_key /etc/nginx/certs/docxz.cf/docxz.cf.cert.key;
+    ssl_protocols       TLSv1 TLSv1.1 TLSv1.2;
+    ssl_ciphers         HIGH:!aNULL:!MD5;
 
-Проверяем: 
-[ivan@localhost ~]$ ip r
+        root /var/www/html;
 
-default via 192.168.5.1 dev eth0 proto dhcp metric 100
+        index index.html index.htm index.nginx-debian.html;
 
-10.10.6.0/24 dev dummy0 scope link
+        
 
-10.10.7.0/24 dev dummy0 scope link
+        location / {
+                try_files $uri $uri/ =404;
+        }
 
-10.10.8.0/24 dev dummy0 scope link
+}
+```
 
-10.10.9.0/24 dev dummy0 scope link
+4. Страница сервера nginx в браузере хоста не содержит предупреждений
 
-10.10.10.0/24 dev dummy0 proto kernel scope link src 10.10.10.10
+ОТВЕТ: Приложил на скрине.
 
-3. Проверьте открытые TCP порты в Ubuntu, какие протоколы и приложения используют эти порты? Приведите несколько примеров.
+5. Скрипт генерации нового сертификата работает (сертификат сервера ngnix должен быть "зеленым")
+```
+#/bin/bash
+ISSUE_DOMAIN="docxz.cf"
+ISSUE_DOMAIN_DIR=/etc/nginx/certs/docxz.cf
 
-ОТВЕТ: открытые порты:
+vault write -format=json pki/issue/2022-servers common_name="$ISSUE_DOMAIN" ttl="730h" > $ISSUE_DOMAIN_DIR/$ISSUE_DOMAIN.json
+cat $ISSUE_DOMAIN_DIR/$ISSUE_DOMAIN.json | jq -r '.data.certificate' > $ISSUE_DOMAIN_DIR/$ISSUE_DOMAIN.cert.pem
+cat $ISSUE_DOMAIN_DIR/$ISSUE_DOMAIN.json | jq -r '.data.ca_chain' > $ISSUE_DOMAIN_DIR/$ISSUE_DOMAIN.ca_chain.pem
+cat $ISSUE_DOMAIN_DIR/$ISSUE_DOMAIN.json | jq -r '.data.private_key' > $ISSUE_DOMAIN_DIR/$ISSUE_DOMAIN.cert.key
 
-[ivan@localhost ~]$ sudo netstat -lpn
-Active Internet connections (only servers)
-Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+systemctl reload nginx
 
-tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1154/sshd
 
-tcp        0      0 127.0.0.1:25            0.0.0.0:*               LISTEN      1385/master
+ivan@ubuntu-focal:/etc/nginx/certs$ sudo nano docxz.cf_renew.sh
+ivan@ubuntu-focal:/etc/nginx/certs$ sudo chmod +x docxz.cf_renew.sh
+```
+6. Crontab работает (выберите число и время так, чтобы показать что crontab запускается и делает что надо)
 
-tcp6       0      0 :::9100                 :::*                    LISTEN      681/node_exporter
-
-tcp6       0      0 :::22                   :::*                    LISTEN      1154/sshd
-
-tcp6       0      0 ::1:25                  :::*                    LISTEN      1385/master
-
- 
-
-
-
-
-
-Например 
-tcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1154/sshd
-
-протокол tcp, порт 22, использует sshd (ssh сервер)
-
-tcp6       0      0 :::9100                 :::*                    LISTEN      681/node_exporter
-
-
-Протокол tcp (ipv6) порт 9100 использует node_exporter
-
-4. Проверьте используемые UDP сокеты в Ubuntu, какие протоколы и приложения используют эти порты?
-
-ОТВЕТ:
-[ivan@localhost ~]$ sudo netstat -lpn 
-udp        0      0 127.0.0.1:323           0.0.0.0:*                           704/chronyd
-
-udp        0      0 0.0.0.0:68              0.0.0.0:*                           961/dhclient
-
-udp6       0      0 ::1:323                 :::*                                704/chronyd
-
-
-например,
-
-udp        0      0 127.0.0.1:323           0.0.0.0:*                           704/chronyd
-
-
-Протокол udp  порт 323 слушается только локальный интерфейс 127.0.0.1 - chronyd
-
-
-
-udp        0      0 0.0.0.0:68              0.0.0.0:*                           961/dhclient
-
-Протокол udp  порт 68 - использует dhclient.
-
-5. Используя diagrams.net, создайте L3 диаграмму вашей домашней сети или любой другой сети, с которой вы работали.
-
-ОТВЕТ: схема на картинке
-
+Отредактировал через sudo crontab -e: 
+```
+# запуск скрипта 27 числа в 18:19  каждый месяц:
+19 18 27 * * /etc/nginx/certs/docxz.cf_renew.sh
+```
