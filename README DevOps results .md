@@ -5,6 +5,8 @@ __________________________________________________________________________
 Результатом курсовой работы должны быть снимки экрана или текст:
 
 1. Процесс установки и настройки ufw
+
+ufw в ubuntu установлен по умолчанию
 ```
 ivan@ubuntu-focal:~$ sudo ufw allow 22
 Skipping adding existing rule
@@ -13,7 +15,7 @@ Skipping adding existing rule (v6)
 ivan@ubuntu-focal:~$ sudo ufw allow 443
 Rule added
 Rule added (v6)
-ivan@ubuntu-focal:~$
+
 
 ivan@ubuntu-focal:~$ sudo ufw enable
 Command may disrupt existing ssh connections. Proceed with operation (y|n)? y
