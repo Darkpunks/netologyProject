@@ -37,7 +37,7 @@ wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/
 
 gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring.gpg --fingerprint
 ```
-<img width="500" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/devops%20result/2.jpg">
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/devops%20result/2.jpg">
 
 
 3. Процесс установки и выпуска сертификата с помощью hashicorp vault
