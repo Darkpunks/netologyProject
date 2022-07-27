@@ -70,6 +70,9 @@ cat $ISSUE_DOMAIN_DIR/$ISSUE_DOMAIN.json | jq -r '.data.certificate' > $ISSUE_DO
 cat $ISSUE_DOMAIN_DIR/$ISSUE_DOMAIN.json | jq -r '.data.ca_chain' > $ISSUE_DOMAIN_DIR/$ISSUE_DOMAIN.ca_chain.pem
 cat $ISSUE_DOMAIN_DIR/$ISSUE_DOMAIN.json | jq -r '.data.private_key' > $ISSUE_DOMAIN_DIR/$ISSUE_DOMAIN.cert.key
 ```
+
+
+
 3. Процесс установки и настройки сервера nginx
 ```
 sudo apt install nginx
@@ -77,9 +80,14 @@ sudo apt install nginx
 sudo systemctl start nginx
 
 sudo systemctl status nginx
+```
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/devops%20result/3.1.jpg">
+
+
 
 создаю файлик docxz.cf в available-sites 
 
+```
 server {
         listen              443 ssl;
     server_name         docxz.cf;
@@ -100,10 +108,19 @@ server {
 
 }
 ```
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/devops%20result/3.2.jpg">
+
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/devops%20result/3.3.jpg">
 
 4. Страница сервера nginx в браузере хоста не содержит предупреждений
 
+
 ОТВЕТ: Приложил на скрине.
+
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/devops%20result/4.1.jpg">
+
+
+
 
 5. Скрипт генерации нового сертификата работает (сертификат сервера ngnix должен быть "зеленым")
 ```
@@ -122,10 +139,19 @@ systemctl reload nginx
 ivan@ubuntu-focal:/etc/nginx/certs$ sudo nano docxz.cf_renew.sh
 ivan@ubuntu-focal:/etc/nginx/certs$ sudo chmod +x docxz.cf_renew.sh
 ```
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/devops%20result/4.2.jpg">
+
 6. Crontab работает (выберите число и время так, чтобы показать что crontab запускается и делает что надо)
 
 Отредактировал через sudo crontab -e: 
+
 ```
 # запуск скрипта 27 числа в 18:19  каждый месяц:
 19 18 27 * * /etc/nginx/certs/docxz.cf_renew.sh
 ```
+
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/devops%20result/5.1.jpg">
+
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/devops%20result/5.2.jpg">
+
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/devops%20result/5.3.jpg">
