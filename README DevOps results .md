@@ -41,7 +41,7 @@ gpg --no-default-keyring --keyring /usr/share/keyrings/hashicorp-archive-keyring
 
 3. Процесс установки и выпуска сертификата с помощью hashicorp vault
 
-Создал рутовый сертификат и выпустил его для своего домена docxz.cf
+Создал СА и выпустил сертификат для своего домена docxz.cf
 ```
 vault secrets enable pki
 vault secrets tune -max-lease-ttl=87600h pki
@@ -77,7 +77,7 @@ sudo systemctl start nginx
 
 sudo systemctl status nginx
 
-создаю файлик available sites 
+создаю файлик docxz.cf в available-sites 
 
 server {
         listen              443 ssl;
@@ -120,4 +120,10 @@ systemctl reload nginx
 
 ivan@ubuntu-focal:/etc/nginx/certs$ sudo nano docxz.cf_renew.sh
 ivan@ubuntu-focal:/etc/nginx/certs$ sudo chmod +x docxz.cf_renew.sh
+```
+6. Crontab работает (выберите число и время так, чтобы показать что crontab запускается и делает что надо)
+Отредактировал через sudo crontab -e: 
+```
+# запуск скрипта 27 числа в 18:19  каждый месяц:
+19 18 27 * * /etc/nginx/certs/docxz.cf_renew.sh
 ```
