@@ -62,6 +62,8 @@ SQL-запрос для выдачи списка пользователей с 
 
 список пользователей с правами над таблицами test_db
 
+Самый трудный был test-simple-user поэтому покажу его. 
+
 <img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.2/5.2.5.jpg">
 
 
