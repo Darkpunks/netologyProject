@@ -42,3 +42,21 @@ Ansible
 Приложить вывод команд установленных версий каждой из программ, оформленный в markdown.
 
 ОТВЕТ:
+```
+[ivan@localhost ~]$ vboxmanage --version
+6.1.32r149290
+```
+```
+[ivan@localhost ~]$ vagrant -v
+Vagrant 2.2.19
+```
+```
+[ivan@localhost ~]$ ansible --version
+ansible 2.9.27
+  config file = /etc/ansible/ansible.cfg
+  configured module search path = ['/home/ivan/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/lib/python3.10/site-packages/ansible
+  executable location = /usr/bin/ansible
+  python version = 3.10.0 (default, Oct  4 2021, 00:00:00) [GCC 11.2.1 20210728 (Red Hat 11.2.1-1)]
+  
+  ```
