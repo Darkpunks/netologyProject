@@ -129,7 +129,7 @@ UPDATE clients set  "заказ" = 5 where "фамилия" = 'Иоганн Се
 <img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.2/5.4.1.jpg">
 
 
-<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.2/5.4.2.jpg">
+img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.2/5.4.2.jpg">
 
 
 __________________________________________________________________________
@@ -191,6 +191,6 @@ root@9038d2685a13:/# psql -U postgres -f /backup/pg1.bak
 
 <img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.2/5.6.2.jpg">
 
-<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.2/5.6.3.jpg">
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.2/5.6.3..jpg">
 
 <img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.2/5.6.4.jpg">
