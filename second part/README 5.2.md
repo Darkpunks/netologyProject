@@ -44,19 +44,20 @@ Ansible
 ОТВЕТ:
 ```
 [ivan@localhost ~]$ vboxmanage --version
-6.1.32r149290
+6.1.36r14929
 ```
 ```
 [ivan@localhost ~]$ vagrant -v
-Vagrant 2.2.19
+Vagrant 2.3.0
 ```
 ```
 [ivan@localhost ~]$ ansible --version
-ansible 2.9.27
+ansible 2.9.6
   config file = /etc/ansible/ansible.cfg
   configured module search path = ['/home/ivan/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
   ansible python module location = /usr/lib/python3.10/site-packages/ansible
   executable location = /usr/bin/ansible
-  python version = 3.10.0 (default, Oct  4 2021, 00:00:00) [GCC 11.2.1 20210728 (Red Hat 11.2.1-1)]
+  python version = 3.8.10 (default, Jun 22 2022, 20:18:18) [GCC 9.4.0]
+  
   
   ```
