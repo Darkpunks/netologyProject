@@ -129,7 +129,7 @@ UPDATE clients set  "заказ" = 5 where "фамилия" = 'Иоганн Се
 <img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.2/5.4.1.jpg">
 
 
-img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.2/5.4.2.jpg">
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.2/5.4.2.jpg">
 
 
 __________________________________________________________________________
