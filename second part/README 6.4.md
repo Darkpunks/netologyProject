@@ -34,6 +34,8 @@ psql -U postgres
 
 сделал.
 
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.4/6.4.1.jpg">
+
 Найдите и приведите управляющие команды для:
 
 вывода списка БД
@@ -73,6 +75,9 @@ postgres=# CREATE DATABASE test_database;
 ```
 root@postgres:/# psql -U postgres -f /backup/test_dump.sql test_database
 ```
+
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.4/6.4.2-1.jpg">
+
 Перейдите в управляющую консоль psql внутри контейнера.
 ```
 root@postgres:/# psql -U postgres
@@ -103,6 +108,8 @@ test_database=# select avg_width from pg_stats where tablename='orders';
 (3 rows)
 ```
 
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.4/6.4.2-2.jpg">
+
 __________________________________________________________________________
 Задача 3
 __________________________________________________________________________
@@ -126,10 +133,12 @@ begin;
     insert into orders_part (id, title, price) select * from orders;
 commit;
 ```
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.4/6.4.3.jpg">
 
 __________________________________________________________________________
 Задача 4
 __________________________________________________________________________
+
 Используя утилиту pg_dump создайте бекап БД test_database.
 ```
 root@postgres:/# pg_dump -U postgres -d test_database >/backup/test_database_dump.sql
