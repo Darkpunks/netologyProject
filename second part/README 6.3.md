@@ -27,6 +27,7 @@ services:
 ```
 
 
+
 Изучите бэкап БД и восстановитесь из него.
 
 
@@ -66,6 +67,10 @@ Uptime:                 24 min 55 sec
 
 Threads: 2  Questions: 51  Slow queries: 0  Opens: 140  Flush tables: 3  Open tables: 58  Queries per second avg: 0.034
 ```
+
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.3/6%20(1).jpg">
+
+
 Подключитесь к восстановленной БД и получите список таблиц из этой БД.
 ```
 mysql> SHOW DATABASES;
@@ -93,7 +98,13 @@ mysql> SHOW TABLES;
 1 row in set (0.00 sec)
 ```
 
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.3/6%20(2).jpg">
+
+
 Приведите в ответе количество записей с price > 300.
+
+
+
 
 ```
 mysql> select * from orders where price > 300;
@@ -114,6 +125,12 @@ mysql> select count(*) from orders where price > 300;
 +----------+
 1 row in set (0.00 sec)
 ```
+
+
+
+
+
+
 
 В следующих заданиях мы будем продолжать работу с данным контейнером.
 
@@ -166,6 +183,8 @@ mysql> SELECT * FROM INFORMATION_SCHEMA.USER_ATTRIBUTES WHERE USER='test';
 1 row in set (0.00 sec)
 ```
 
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.3/6%20(3).jpg">
+
 Задача 3
 Установите профилирование SET profiling = 1. Изучите вывод профилирования команд SHOW PROFILES;.
 
@@ -184,6 +203,16 @@ mysql> SELECT TABLE_NAME,ENGINE,ROW_FORMAT,TABLE_ROWS,DATA_LENGTH,INDEX_LENGTH F
 +------------+--------+------------+------------+-------------+--------------+
 1 row in set (0.01 sec)
 ```
+
+
+
+
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.3/6%20(4).jpg">
+
+
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.3/6%20(5).jpg">
+
+
 Используеся ENGINE - InnoDB
 
 Измените engine и приведите время выполнения и запрос на изменения из профайлера в ответе:
@@ -212,6 +241,8 @@ mysql> show profiles;
 
 ```
 
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.3/6%20(6).jpg">
+
 Переключение на MyISAM: 0.0138 секунд
 Переключение на InnoDB: 0.0172 секунд
 
@@ -220,6 +251,10 @@ mysql> show profiles;
 
 
 Изучите файл my.cnf в директории /etc/mysql.
+
+Изучил. 
+
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.3/6%20(8).jpg">
 
 Измените его согласно ТЗ (движок InnoDB):
 
@@ -236,6 +271,8 @@ mysql> show profiles;
 Mem:           3.7G        1.2G        147M         12M        2.3G        2.2G
 Swap:          3.0G          0B        3.0G
 ```
+
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.3/6%20(7).jpg">
 
 30% от 3,7 гб - округляем до 1 гб 
 
@@ -261,4 +298,6 @@ key_buffer_size = 1G
 #Set log size
 max_binlog_size	= 100M
 ```
+
+
 
