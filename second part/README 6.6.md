@@ -65,14 +65,14 @@ InterfaceError: (InterfaceError) 2013: Lost connection to MySQL server during qu
 
 1) Можно попробовать увеличить значени mysql 
 ```
-connect_timeout 
-max_allowed_packet
-net_buffer_length 
-innodb_force_recovery
+connect_timeout
+net_read_timeout 
+wait_timeout 
+interactive_timeout
 ```
 2) Может быть OOM Killer, который убивает процессы в системе, вполне мог убить процесс mysql прямо посередине критичного изменения файлов БД. (надо проверяять sys.log и посмотреть на мониторинг)
 
-
+3) Оптимизировать запрос. 
 
 __________________________________________________________________________
 Задача 4
