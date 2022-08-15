@@ -134,9 +134,11 @@ begin;
 commit;
 ```
 <img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.4/6.4.3.jpg">
+
 __________________________________________________________________________
 Задача 4
 __________________________________________________________________________
+
 Используя утилиту pg_dump создайте бекап БД test_database.
 ```
 root@postgres:/# pg_dump -U postgres -d test_database >/backup/test_database_dump.sql
