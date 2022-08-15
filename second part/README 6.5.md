@@ -26,6 +26,9 @@ ECSCFG
 ```
 https://hub.docker.com/r/darkpunks/elasticsearch-netology
 ```
+
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.5/6.5.1.jpg">
+
 ответ elasticsearch на запрос пути / в json виде
 ```
 [ivan@localhost elasticsearch]$ curl 127.0.0.1:9200/
@@ -46,6 +49,9 @@ https://hub.docker.com/r/darkpunks/elasticsearch-netology
   },
   "tagline" : "You Know, for Search"
 ```
+
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.5/6.5.1-2.jpg">
+
 __________________________________________________________________________
 Задание 2 
 __________________________________________________________________________
@@ -63,6 +69,14 @@ green  open   ind-1            3IF3_47qQIiy8mRt7kruvQ   1   0          0        
 yellow open   ind-3            Qqr3CFgOS_CepSrsio2BMA   4   2          0            0       904b           904b
 yellow open   ind-2            ML8uOdIjQTC2WBlOGoNNyg   2   1          0            0       452b           452b
 ```
+
+
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.5/6.5.2.jpg">
+
+
+
+
+
 Почему часть индексов и кластер находится в состоянии yellow?
 
 
@@ -77,6 +91,8 @@ curl -X DELETE 'http://127.0.0.1:9200/ind-3?pretty'
 health status index            uuid                   pri rep docs.count docs.deleted store.size pri.store.size
 green  open   .geoip_databases 4RvWxsg6QPm0XO-admXwng   1   0         40            0     37.9mb         37.9mb
 ```
+
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.5/6.5.2-1.jpg">
 
 __________________________________________________________________________
 Задание 3
@@ -100,6 +116,9 @@ __________________________________________________________________________
   }
 }
 ```
+
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.5/6.5.3.jpg">
+
 Создайте индекс test с 0 реплик и 1 шардом и приведите в ответе список индексов.
 
 ```
@@ -164,4 +183,6 @@ green  open   test             rapgGDGpQj63kglXFLsdEQ   1   0          0        
 ```
 
 
+
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/6.5/6.5.3-1.jpg">
 
