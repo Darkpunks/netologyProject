@@ -62,7 +62,7 @@ Terraform will perform the following actions:
         }
 ```
 
- <img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/7.2/7.2.1.jpg">
+ <img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/7.2/7.2.jpg">
 
 Ссылку на репозиторий с исходной конфигурацией терраформа.
 
