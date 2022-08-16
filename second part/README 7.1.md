@@ -75,6 +75,7 @@ __________________________________________________________________________
 
 
 ОТВЕТ: 
+в .bashrc добавил алиас на новую и старую версию терраформа
 
 <img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/7.1/7.2-1.jpg">
 
