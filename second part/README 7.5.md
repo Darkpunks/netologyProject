@@ -105,6 +105,6 @@ Min integer:  1
 
 ```
 
-<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/7.5/7.5.3-2.jpg">
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/7.5/7.5.3.-3.png">
 
 
