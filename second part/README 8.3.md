@@ -85,6 +85,8 @@ Role: https://galaxy.ansible.com/docs/contributing/creating_role.html#role-names
 As an alternative, you can add 'role-name' to either skip_list or warn_list.
 ```
 
+<img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/8.3/8.3.2.jpg">
+
 3. Перейдите в каталог с ролью elastic-role и создайте сценарий тестирования по умолчаню при помощи molecule init scenario --driver-name docker.
 
 ```
@@ -101,10 +103,9 @@ localhost | CHANGED => {"backup": "","changed": true,"msg": "line added"}
 INFO     Initialized role in /home/ivan/netology_elastic_role/netology successfully.
 
 ```
- <img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/8.3/8.3.2.jpg">
- 
- 
  <img width="700" alt="2" src="https://github.com/Darkpunks/netologyProject/blob/main/second%20part/8.3/8.3.3.jpg">
+ 
+ 
  
 
 4. Добавьте несколько разных дистрибутивов (centos:8, ubuntu:latest) для инстансов и протестируйте роль, исправьте найденные ошибки, если они есть.
