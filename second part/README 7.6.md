@@ -31,19 +31,21 @@ __________________________________________________________________________
 
 2. Для создания очереди сообщений SQS используется ресурс aws_sqs_queue у которого есть параметр name.
 
-ОТВЕТ:
-
-
-3. С каким другим параметром конфликтует name? Приложите строчку кода, в которой это указано.
+2а. С каким другим параметром конфликтует name? Приложите строчку кода, в которой это указано.
 
 ОТВЕТ:
+ConflictsWith: []string{"name_prefix"} 
+
+[конфликт_name](https://github.com/hashicorp/terraform-provider-aws/blob/8e4d8a3f3f781b83f96217c2275f541c893fec5a/aws/resource_aws_sqs_queue.go#L56)
 
 
-4. Какая максимальная длина имени?
+2б. Какая максимальная длина имени?
 
-ОТВЕТ:
+ОТВЕТ: [не_более_80 символов](https://github.com/hashicorp/terraform-provider-aws/blob/8e4d8a3f3f781b83f96217c2275f541c893fec5a/aws/validators.go#L1038)
 
 
-5. Какому регулярному выражению должно подчиняться имя?
+2в. Какому регулярному выражению должно подчиняться имя?
 
 ОТВЕТ: 
+[0-9A-Za-z-_] и доп ограничения Fifo - содежатся в: 
+[func_validateSQSNonFifoQueueName_func_validateSQSFifoQueueName](https://github.com/hashicorp/terraform-provider-aws/blob/8e4d8a3f3f781b83f96217c2275f541c893fec5a/aws/validators.go#L1041)
